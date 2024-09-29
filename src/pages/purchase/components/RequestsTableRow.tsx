@@ -4,13 +4,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { MessageSquare } from 'lucide-react';
 import React from 'react';
 
-export const RequestsTableRow = ({
-  value,
-  onChange,
-}: {
+interface PhoneTableRowProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-}) => {
+}
+
+export const RequestsTableRow = ({ value, onChange }: PhoneTableRowProps) => {
   return (
     <TableRow>
       <TableCell className="font-bold">

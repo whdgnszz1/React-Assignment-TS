@@ -3,13 +3,12 @@ import { Label } from '@/components/ui/label';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { User } from 'lucide-react';
 
-export const NameTableRow = ({
-  value,
-  onChange,
-}: {
+interface NameTableRowProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) => {
+}
+
+export const NameTableRow = ({ value, onChange }: NameTableRowProps) => {
   return (
     <TableRow>
       <TableCell className="font-bold">

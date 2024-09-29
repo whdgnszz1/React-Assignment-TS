@@ -63,7 +63,7 @@ const productsSlice = createSlice({
         addProduct.rejected,
         (state, action: PayloadAction<string | undefined>) => {
           state.isLoading = false;
-          state.error = action.payload || 'Failed to add product';
+          state.error = action.payload || '상품 등록에 실패하였습니다.';
         }
       );
   },

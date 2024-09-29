@@ -6,14 +6,13 @@ import { useState } from 'react';
 
 import { PHONE_PATTERN } from '@/constants';
 
-export const PhoneTableRow = ({
-  value,
-  onChange,
-}: {
+interface PhoneTableRowProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) => {
-  const [error, setError] = useState('');
+}
+
+export const PhoneTableRow = ({ value, onChange }: PhoneTableRowProps) => {
+  const [error, setError] = useState<string>('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;

@@ -3,11 +3,11 @@ import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-export const SearchBar = ({
-  onChangeInput,
-}: {
+interface SearchBarProps {
   onChangeInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) => {
+}
+
+export const SearchBar = ({ onChangeInput }: SearchBarProps) => {
   return (
     <div className="space-y-2 mt-4">
       <Label htmlFor="searchbar-input">검색</Label>

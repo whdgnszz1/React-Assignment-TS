@@ -1,9 +1,9 @@
+import { Product } from '@/api/dtos/productDTO';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { formatPrice } from '@/utils/formatter';
 import { useState } from 'react';
-import { Product } from '@/api/dtos/productDTO';
 
 interface ProductCardProps {
   product: Product;
@@ -50,7 +50,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           alt={`${title} 상품 이미지`}
           className={`w-full h-full object-cover ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setImageLoaded(true)}
-          loading="lazy"
           width={320}
           height={160}
         />

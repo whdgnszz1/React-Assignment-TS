@@ -59,7 +59,7 @@ export const ProductFilter = () => {
     if (value !== undefined) {
       dispatch(setCategoryId(value));
     } else {
-      console.error('Category value is undefined');
+      console.error('카테고리가 설정되지 않았습니다.');
     }
   };
 

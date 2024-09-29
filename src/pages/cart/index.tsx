@@ -4,7 +4,7 @@ import { Layout, authStatusType } from '@/pages/common/components/Layout';
 import { selectCart } from '@/store/cart/cartSelectors';
 import { useAppSelector } from '@/store/hooks';
 
-const Cart = () => {
+export const Cart = () => {
   const cart = useAppSelector(selectCart);
   const isExist = cart.length > 0;
 
@@ -17,5 +17,3 @@ const Cart = () => {
     </Layout>
   );
 };
-
-export default Cart;

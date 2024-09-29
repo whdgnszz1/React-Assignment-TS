@@ -1,7 +1,7 @@
 import { createBrowserRouter, Outlet } from 'react-router-dom';
 
 import { pageRoutes } from '@/apiRoutes';
-import Cart from '@/pages/cart';
+import { Cart } from '@/pages/cart';
 import { RootErrorBoundary } from '@/pages/common/components/RootErrorHandler';
 import { RootSuspense } from '@/pages/common/components/RootSuspense';
 import { ErrorPage } from '@/pages/error/components/ErrorPage';

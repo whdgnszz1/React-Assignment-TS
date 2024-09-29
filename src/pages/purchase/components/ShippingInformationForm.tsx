@@ -8,17 +8,19 @@ import { PhoneTableRow } from '@/pages/purchase/components/PhoneTableRow';
 import { RequestsTableRow } from '@/pages/purchase/components/RequestsTableRow';
 import { FormData, FormErrors } from '..';
 
-export const ShippingInformationForm = ({
-  formData,
-  onChange,
-  errors,
-}: {
+interface PhoneTableRowProps {
   formData: FormData;
   onChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
   errors: FormErrors;
-}) => {
+}
+
+export const ShippingInformationForm = ({
+  formData,
+  onChange,
+  errors,
+}: PhoneTableRowProps) => {
   return (
     <Card className="mt-6">
       <CardHeader>
@@ -31,11 +33,7 @@ export const ShippingInformationForm = ({
         <Table>
           <TableBody>
             <NameTableRow value={formData.name} onChange={onChange} />
-            <AddressTableRow
-              value={formData.address}
-              onChange={onChange}
-              errors={errors}
-            />
+            <AddressTableRow value={formData.address} onChange={onChange} />
             <PhoneTableRow value={formData.phone} onChange={onChange} />
             <RequestsTableRow value={formData.requests} onChange={onChange} />
           </TableBody>

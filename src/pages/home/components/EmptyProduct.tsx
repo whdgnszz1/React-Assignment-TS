@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Package } from 'lucide-react';
 
-export const EmptyProduct = ({
-  onAddProduct,
-}: {
+interface EmptyProductProps {
   onAddProduct: () => void;
-}) => {
+}
+
+export const EmptyProduct = ({ onAddProduct }: EmptyProductProps) => {
   return (
     <div className="flex flex-col items-center justify-center h-64 bg-gray-100 rounded-lg">
       <Package className="w-16 h-16 text-gray-400 mb-4" />

@@ -66,7 +66,7 @@ export const ProductRegistrationModal: React.FC<
       onClose();
       onProductAdded();
     } catch (error) {
-      console.error('Error adding product:', error);
+      console.error('물품 등록에 실패했습니다.', error);
     }
   };
 

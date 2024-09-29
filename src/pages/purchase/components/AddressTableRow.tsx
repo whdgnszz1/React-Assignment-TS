@@ -2,16 +2,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { MapPin } from 'lucide-react';
-import { FormErrors } from '..';
 
-export const AddressTableRow = ({
-  value,
-  onChange,
-}: {
+interface AddressTableRowProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  errors: FormErrors;
-}) => {
+}
+
+export const AddressTableRow = ({ value, onChange }: AddressTableRowProps) => {
   return (
     <TableRow>
       <TableCell className="font-bold">
