@@ -8,13 +8,15 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { ShoppingCart } from 'lucide-react';
+import { useMemo } from 'react';
 
-import { selectCart } from '@/store/cart/cartSelectors';
-import { useAppSelector } from '@/store/hooks';
+import { useCartStore } from '@/store/cart/useCartStore';
+
 import { formatPrice } from '@/utils/formatter';
 
 export const ItemList = () => {
-  const cart = useAppSelector(selectCart);
+  const cart = useCartStore((state) => state.cart);
+  const cartItems = useMemo(() => Object.values(cart), [cart]);
 
   return (
     <Card className="mt-6">
@@ -34,7 +36,7 @@ export const ItemList = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {Object.values(cart).map(({ id, title, count, price }) => (
+            {cartItems.map(({ id, title, count, price }) => (
               <TableRow key={id}>
                 <TableCell>{title}</TableCell>
                 <TableCell>{count}개</TableCell>

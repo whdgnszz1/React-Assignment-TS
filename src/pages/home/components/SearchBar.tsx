@@ -1,19 +1,23 @@
 import { Search } from 'lucide-react';
-
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 interface SearchBarProps {
   onChangeInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  value: string;
 }
 
-export const SearchBar = ({ onChangeInput }: SearchBarProps) => {
+export const SearchBar: React.FC<SearchBarProps> = ({
+  onChangeInput,
+  value,
+}) => {
   return (
     <div className="space-y-2 mt-4">
       <Label htmlFor="searchbar-input">검색</Label>
       <div className="relative">
         <Input
           id="searchbar-input"
+          value={value}
           placeholder="상품명을 입력해주세요"
           onChange={onChangeInput}
           className="pl-10"

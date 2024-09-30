@@ -1,8 +1,9 @@
 import { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 
+import { useAuthStore } from '@/store/auth/useAuthStore';
+
 import { pageRoutes } from '@/apiRoutes';
-import { useAppSelector } from '@/store/hooks';
 import { NavigationBar } from './NavigationBar';
 
 export const authStatusType = {
@@ -22,7 +23,7 @@ export const Layout: React.FC<LayoutProps> = ({
   containerClassName = '',
   authStatus = authStatusType.COMMON,
 }) => {
-  const { isLogin } = useAppSelector((state) => state.auth);
+  const isLogin = useAuthStore((state) => state.isLogin);
 
   if (authStatus === authStatusType.NEED_LOGIN && !isLogin) {
     return <Navigate to={pageRoutes.login} />;

@@ -1,25 +1,20 @@
-import { Product } from '@/api/dtos/productDTO';
-import { pageRoutes } from '@/apiRoutes';
 import { Button } from '@/components/ui/button';
-import { PRODUCT_PAGE_SIZE } from '@/constants';
-import { extractIndexLink, isFirebaseIndexError } from '@/helpers/error';
-import { useModal } from '@/hooks/useModal';
 import { FirebaseIndexErrorModal } from '@/pages/error/components/FirebaseIndexErrorModal';
-import { selectIsLogin, selectUser } from '@/store/auth/authSelectors';
-import { addCartItem } from '@/store/cart/cartSlice';
-import { selectFilter } from '@/store/filter/filterSelectors';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { loadProducts } from '@/store/product/productsActions';
-import {
-  selectHasNextPage,
-  selectIsLoading,
-  selectProducts,
-  selectTotalCount,
-} from '@/store/product/productsSelectors';
-import { CartItem } from '@/types/cartType';
 import { ChevronDown, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import { useAuthStore } from '@/store/auth/useAuthStore';
+import { useCartStore } from '@/store/cart/useCartStore';
+import { useFilterStore } from '@/store/filter/useFilterStore';
+import { useProductStore } from '@/store/product/useProductStore';
+
+import { Product } from '@/api/dtos/productDTO';
+import { pageRoutes } from '@/apiRoutes';
+import { PRODUCT_PAGE_SIZE } from '@/constants';
+import { extractIndexLink, isFirebaseIndexError } from '@/helpers/error';
+import { useModal } from '@/hooks/useModal';
+import { CartItem } from '@/types/cartType';
 import { ProductCardSkeleton } from '../skeletons/ProductCardSkeleton';
 import { EmptyProduct } from './EmptyProduct';
 import { ProductCard } from './ProductCard';
@@ -33,55 +28,59 @@ export const ProductList: React.FC<ProductListProps> = ({
   pageSize = PRODUCT_PAGE_SIZE,
 }) => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const { isOpen, openModal, closeModal } = useModal();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isIndexErrorModalOpen, setIsIndexErrorModalOpen] =
     useState<boolean>(false);
   const [indexLink, setIndexLink] = useState<string | null>(null);
 
-  const products = useAppSelector(selectProducts);
-  const hasNextPage = useAppSelector(selectHasNextPage);
-  const isLoading = useAppSelector(selectIsLoading);
-  const filter = useAppSelector(selectFilter);
-  const user = useAppSelector(selectUser);
-  const isLogin = useAppSelector(selectIsLogin);
-  const totalCount = useAppSelector(selectTotalCount);
+  const { minPrice, maxPrice, title, categoryId } = useFilterStore();
+  const { isLogin, user } = useAuthStore();
+
+  const products = useProductStore((state) => state.items);
+  const hasNextPage = useProductStore((state) => state.hasNextPage);
+  const isLoading = useProductStore((state) => state.isLoading);
+  const totalCount = useProductStore((state) => state.totalCount);
+  const error = useProductStore((state) => state.error);
+  const loadProducts = useProductStore((state) => state.loadProducts);
+
+  const addCartItem = useCartStore((state) => state.addCartItem);
 
   const loadProductsData = async (isInitial = false): Promise<void> => {
     try {
       const page = isInitial ? 1 : currentPage + 1;
-      await dispatch(
-        loadProducts({
-          filter,
-          pageSize,
-          page,
-          isInitial,
-        })
-      ).unwrap();
+      await loadProducts({
+        filter: { minPrice, maxPrice, title, categoryId },
+        pageSize,
+        page,
+        isInitial,
+      });
       if (!isInitial) {
         setCurrentPage(page);
       }
     } catch (error) {
-      if (isFirebaseIndexError(error as string)) {
-        const link = extractIndexLink(error as string);
-        setIndexLink(link);
-        setIsIndexErrorModalOpen(true);
-      }
-      throw error;
+      console.error('Error loading products:', error);
     }
   };
 
   useEffect(() => {
     setCurrentPage(1);
     loadProductsData(true);
-  }, [filter]);
+  }, [minPrice, maxPrice, title, categoryId]);
+
+  useEffect(() => {
+    if (error && isFirebaseIndexError(error)) {
+      const link = extractIndexLink(error);
+      setIndexLink(link);
+      setIsIndexErrorModalOpen(true);
+    }
+  }, [error]);
 
   const handleCartAction = (product: Product): void => {
     if (isLogin && user) {
       const cartItem: CartItem = { ...product, count: 1 };
-      dispatch(addCartItem({ item: cartItem, userId: user.uid, count: 1 }));
-      console.log(`${product.title} 상품이 \n장바구니에 담겼습니다.`);
+      addCartItem(cartItem, user.uid, 1);
+      console.log(`${product.title} 상품이 장바구니에 담겼습니다.`);
     } else {
       navigate(pageRoutes.login);
     }
@@ -90,7 +89,7 @@ export const ProductList: React.FC<ProductListProps> = ({
   const handlePurchaseAction = (product: Product): void => {
     if (isLogin && user) {
       const cartItem: CartItem = { ...product, count: 1 };
-      dispatch(addCartItem({ item: cartItem, userId: user.uid, count: 1 }));
+      addCartItem(cartItem, user.uid, 1);
       navigate(pageRoutes.cart);
     } else {
       navigate(pageRoutes.login);

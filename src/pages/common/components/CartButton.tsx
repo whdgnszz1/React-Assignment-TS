@@ -1,8 +1,8 @@
+import { Button } from '@/components/ui/button';
 import { ShoppingCart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 import { pageRoutes } from '@/apiRoutes';
-import { Button } from '@/components/ui/button';
 import { CartItem } from '@/types/cartType';
 
 export const CartButton = ({ cart }: { cart: CartItem[] }) => {

@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { auth } from '@/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import Cookies from 'js-cookie';
 import { Lock, Mail } from 'lucide-react';
@@ -9,10 +10,10 @@ import { useNavigate } from 'react-router-dom';
 
 import { pageRoutes } from '@/apiRoutes';
 import { EMAIL_PATTERN } from '@/constants';
-import { auth } from '@/firebase';
+
+import { useAuthStore } from '@/store/auth/useAuthStore';
+
 import { Layout, authStatusType } from '@/pages/common/components/Layout';
-import { setIsLogin, setUser } from '@/store/auth/authSlice';
-import { useAppDispatch } from '@/store/hooks';
 
 interface FormErrors {
   email?: string;
@@ -22,7 +23,8 @@ interface FormErrors {
 
 export const LoginPage = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+
+  const { setIsLogin, setUser } = useAuthStore();
 
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -60,19 +62,20 @@ export const LoginPage = () => {
         const user = userCredential.user;
         const token = await user.getIdToken();
 
+        // Save the token in cookies
         Cookies.set('accessToken', token, { expires: 7 });
 
-        dispatch(setIsLogin(true));
+        // Update Zustand store with login state and user info
+        setIsLogin(true);
         if (user) {
-          dispatch(
-            setUser({
-              uid: user.uid,
-              email: user.email ?? '',
-              displayName: user.displayName ?? '',
-            })
-          );
+          setUser({
+            uid: user.uid,
+            email: user.email ?? '',
+            displayName: user.displayName ?? '',
+          });
         }
 
+        // Navigate to the main page after login
         navigate(pageRoutes.main);
       } catch (error) {
         console.error(

@@ -1,4 +1,3 @@
-import { NewProductDTO } from '@/api/dtos/productDTO';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -16,12 +15,14 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { ChangeEvent, useState } from 'react';
+
+import { useProductStore } from '@/store/product/useProductStore';
+
+import { NewProductDTO } from '@/api/dtos/productDTO';
 import { ALL_CATEGORY_ID, categories } from '@/constants';
 import { createNewProduct, initialProductState } from '@/helpers/product';
-import { useAppDispatch } from '@/store/hooks';
-import { addProduct } from '@/store/product/productsActions';
 import { uploadImage } from '@/utils/imageUpload';
-import { ChangeEvent, useState } from 'react';
 
 interface ProductRegistrationModalProps {
   isOpen: boolean;
@@ -32,8 +33,11 @@ interface ProductRegistrationModalProps {
 export const ProductRegistrationModal: React.FC<
   ProductRegistrationModalProps
 > = ({ isOpen, onClose, onProductAdded }) => {
-  const dispatch = useAppDispatch();
+  const addProduct = useProductStore((state) => state.addProduct);
+
   const [product, setProduct] = useState<NewProductDTO>(initialProductState);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -50,7 +54,16 @@ export const ProductRegistrationModal: React.FC<
     }
   };
 
+  const handleCategoryChange = (value: string): void => {
+    setProduct((prev) => ({
+      ...prev,
+      category: { ...prev.category, id: value },
+    }));
+  };
+
   const handleSubmit = async (): Promise<void> => {
+    setIsSubmitting(true);
+    setError(null);
     try {
       if (!product.image) {
         throw new Error('이미지를 선택해야 합니다.');
@@ -62,19 +75,17 @@ export const ProductRegistrationModal: React.FC<
       }
 
       const newProduct = createNewProduct(product, imageUrl);
-      await dispatch(addProduct(newProduct));
+
+      await addProduct(newProduct);
+
       onClose();
       onProductAdded();
-    } catch (error) {
+    } catch (error: any) {
       console.error('물품 등록에 실패했습니다.', error);
+      setError(error.message || '물품 등록에 실패했습니다.');
+    } finally {
+      setIsSubmitting(false);
     }
-  };
-
-  const handleCategoryChange = (value: string): void => {
-    setProduct((prev) => ({
-      ...prev,
-      category: { ...prev.category, id: value },
-    }));
   };
 
   return (
@@ -128,8 +139,11 @@ export const ProductRegistrationModal: React.FC<
             onChange={handleImageChange}
           />
         </div>
+        {error && <p className="text-red-500 text-sm">{error}</p>}
         <DialogFooter>
-          <Button onClick={handleSubmit}>등록</Button>
+          <Button onClick={handleSubmit} disabled={isSubmitting}>
+            {isSubmitting ? '등록 중...' : '등록'}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

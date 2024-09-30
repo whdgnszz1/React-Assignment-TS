@@ -5,3 +5,8 @@ export interface CartItem {
   price: number;
   count: number;
 }
+
+export interface Total {
+  totalCount: number;
+  totalPrice: number;
+}

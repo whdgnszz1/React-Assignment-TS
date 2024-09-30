@@ -6,20 +6,18 @@ import { AddressTableRow } from '@/pages/purchase/components/AddressTableRow';
 import { NameTableRow } from '@/pages/purchase/components/NameTableRow';
 import { PhoneTableRow } from '@/pages/purchase/components/PhoneTableRow';
 import { RequestsTableRow } from '@/pages/purchase/components/RequestsTableRow';
-import { FormData, FormErrors } from '..';
+import { FormData } from '..';
 
 interface PhoneTableRowProps {
   formData: FormData;
   onChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
-  errors: FormErrors;
 }
 
 export const ShippingInformationForm = ({
   formData,
   onChange,
-  errors,
 }: PhoneTableRowProps) => {
   return (
     <Card className="mt-6">
