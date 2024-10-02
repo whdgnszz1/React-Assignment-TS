@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '@/store/auth/useAuthStore';
@@ -11,11 +11,12 @@ import { useCartStore } from '@/store/cart/useCartStore';
 import { useMakePurchase } from '@/lib/purchase/hooks/useMakePurchase';
 
 import { pageRoutes } from '@/apiRoutes';
-import { PHONE_PATTERN } from '@/constants';
 import { Layout, authStatusType } from '@/pages/common/components/Layout';
 import { ItemList } from '@/pages/purchase/components/ItemList';
 import { Payment } from '@/pages/purchase/components/Payment';
 import { ShippingInformationForm } from '@/pages/purchase/components/ShippingInformationForm';
+
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
 export interface FormData {
   name: string;
@@ -23,29 +24,30 @@ export interface FormData {
   phone: string;
   requests: string;
   payment: string;
+  form?: string;
 }
 
 export interface FormErrors {
-  phone: string;
+  phone?: string;
+  form?: string;
 }
 
 export const Purchase: React.FC = () => {
   const navigate = useNavigate();
-  const user = useAuthStore((state) => state.user);
+  const { user } = useAuthStore();
+  const { cart, resetCart, initCart } = useCartStore();
 
-  const cart = useCartStore((state) => state.cart);
-  const resetCart = useCartStore((state) => state.resetCart);
-  const initCart = useCartStore((state) => state.initCart);
-
-  const [formData, setFormData] = useState<FormData>({
-    name: user?.displayName ?? '',
-    address: '',
-    phone: '',
-    requests: '',
-    payment: 'accountTransfer',
+  const methods = useForm<FormData>({
+    defaultValues: {
+      name: user?.displayName ?? '',
+      address: '',
+      phone: '',
+      requests: '',
+      payment: 'accountTransfer',
+    },
   });
 
-  const [isFormValid, setIsFormValid] = useState<boolean>(false);
+  const { handleSubmit } = methods;
 
   useEffect(() => {
     if (user?.uid) {
@@ -53,37 +55,26 @@ export const Purchase: React.FC = () => {
     }
   }, [user, initCart]);
 
-  useEffect(() => {
-    const { address, phone } = formData;
-    const isPhoneValid = PHONE_PATTERN.test(phone);
-    setIsFormValid(address.trim() !== '' && isPhoneValid);
-  }, [formData]);
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
   const { mutate: makePurchaseMutation, isPending: isLoading } =
     useMakePurchase();
 
-  const handleClickPurchase = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!isFormValid || !user) return;
+  const onSubmit: SubmitHandler<FormData> = (data) => {
+    if (!user) return;
 
     const cartItems = Object.values(cart);
-
     const total = calculateTotal(cart);
     const totalAmount = total.totalPrice;
 
     const purchaseData = {
-      ...formData,
+      ...data,
       totalAmount,
-      paymentMethod: formData.payment,
-      shippingAddress: formData.address,
-      items: cartItems,
+      paymentMethod: data.payment,
+      shippingAddress: data.address,
+      items: cartItems.map((item) => ({
+        productId: item.id,
+        quantity: item.count,
+        price: item.price,
+      })),
     };
 
     makePurchaseMutation(
@@ -99,51 +90,40 @@ export const Purchase: React.FC = () => {
           navigate(pageRoutes.main);
         },
         onError: (error: Error) => {
-          console.error(
-            '잠시 문제가 발생했습니다! 다시 시도해 주세요.',
-            error.message
-          );
+          console.error('구매 중 오류가 발생했습니다.', error.message);
         },
       }
     );
   };
 
   return (
-    <Layout
-      containerClassName="pt-[30px]"
-      authStatus={authStatusType.NEED_LOGIN}
-    >
-      <Card className="w-full max-w-4xl mx-auto">
-        <CardContent className="p-6">
-          <form onSubmit={handleClickPurchase}>
-            <ShippingInformationForm
-              formData={formData}
-              onChange={handleInputChange}
-            />
-            <ItemList />
-            <Payment
-              paymentMethod={formData.payment}
-              onPaymentMethodChange={handleInputChange}
-            />
-            <div className="flex justify-end mt-6">
-              <Button
-                type="submit"
-                size="lg"
-                disabled={isLoading || !isFormValid}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    처리 중...
-                  </>
-                ) : (
-                  '구매하기'
-                )}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-    </Layout>
+    <FormProvider {...methods}>
+      <Layout
+        containerClassName="pt-[30px]"
+        authStatus={authStatusType.NEED_LOGIN}
+      >
+        <Card className="w-full max-w-4xl mx-auto">
+          <CardContent className="p-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <ShippingInformationForm />
+              <ItemList />
+              <Payment />
+              <div className="flex justify-end mt-6">
+                <Button type="submit" size="lg" disabled={isLoading}>
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      처리 중...
+                    </>
+                  ) : (
+                    '구매하기'
+                  )}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </Layout>
+    </FormProvider>
   );
 };

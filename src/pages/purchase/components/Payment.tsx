@@ -1,22 +1,26 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { CreditCard } from 'lucide-react';
 
+import { formatPrice } from '@/utils/formatter';
+import { Controller, useFormContext } from 'react-hook-form';
+
 import { useCartStore } from '@/store/cart/useCartStore';
 
-import { PaymentMethodTableRow } from '@/pages/purchase/components/PaymentMethodTableRow';
-import { formatPrice } from '@/utils/formatter';
+export const Payment: React.FC = () => {
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext();
 
-interface PaymentProps {
-  paymentMethod: string;
-  onPaymentMethodChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
-
-export const Payment = ({
-  paymentMethod,
-  onPaymentMethodChange,
-}: PaymentProps) => {
-  const totalPrice = useCartStore((state) => state.totalPrice);
+  const { totalPrice } = useCartStore();
   const shippingCost = 3000;
 
   const getTotalPrice = () => {
@@ -46,10 +50,30 @@ export const Payment = ({
               <TableCell className="font-bold">총결제금액</TableCell>
               <TableCell>{getTotalPrice()}</TableCell>
             </TableRow>
-            <PaymentMethodTableRow
-              paymentMethod={paymentMethod}
-              onPaymentMethodChange={onPaymentMethodChange}
-            />
+            <TableRow>
+              <TableCell className="font-bold">결제 방법</TableCell>
+              <TableCell>
+                <Controller
+                  name="payment"
+                  control={control}
+                  rules={{ required: '결제 방법을 선택하세요' }}
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="결제 방법을 선택하세요" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="accountTransfer">
+                          계좌 이체
+                        </SelectItem>
+                        <SelectItem value="creditCard">신용 카드</SelectItem>
+                        <SelectItem value="kakaoPay">카카오페이</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </CardContent>

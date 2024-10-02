@@ -15,12 +15,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { ChangeEvent, useState } from 'react';
+import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 
 import { useAddProduct } from '@/lib/product/hooks/useAddProduct';
 
 import { ALL_CATEGORY_ID, categories } from '@/constants';
-import { createNewProduct, initialProductState } from '@/helpers/product';
+import { createNewProduct } from '@/helpers/product';
 import { NewProductDTO } from '@/lib/product';
 import { uploadImage } from '@/utils/imageUpload';
 
@@ -29,56 +30,67 @@ interface ProductRegistrationModalProps {
   onClose: () => void;
 }
 
+interface ProductFormInputs {
+  title: string;
+  price: number;
+  description: string;
+  categoryId: string;
+  image: FileList;
+}
+
 export const ProductRegistrationModal: React.FC<
   ProductRegistrationModalProps
 > = ({ isOpen, onClose }) => {
   const { mutateAsync, isPending: isLoading } = useAddProduct();
 
-  const [product, setProduct] = useState<NewProductDTO>(initialProductState);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    control,
+  } = useForm<ProductFormInputs>();
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ): void => {
-    const { name, value } = e.target;
-    setProduct((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      const file = files[0];
-      setProduct((prev) => ({ ...prev, image: file }));
-    }
-  };
-
-  const handleCategoryChange = (value: string): void => {
-    setProduct((prev) => ({
-      ...prev,
-      category: { ...prev.category, id: value },
-    }));
-  };
-
-  const handleSubmit = async (): Promise<void> => {
-    setError(null);
+  const onSubmit = async (data: ProductFormInputs) => {
+    setSubmissionError(null);
     try {
-      if (!product.image) {
+      if (!data.image || data.image.length === 0) {
         throw new Error('이미지를 선택해야 합니다.');
       }
 
-      const imageUrl = await uploadImage(product.image as File);
+      const imageFile = data.image[0];
+
+      const imageUrl = await uploadImage(imageFile);
       if (!imageUrl) {
         throw new Error('이미지 업로드에 실패했습니다.');
       }
 
-      const newProduct = createNewProduct(product, imageUrl);
+      const selectedCategory = categories.find(
+        (category) => category.id === data.categoryId
+      );
+
+      if (!selectedCategory) {
+        throw new Error('유효한 카테고리를 선택해주세요.');
+      }
+
+      const newProductData: NewProductDTO = {
+        title: data.title,
+        price: Number(data.price),
+        description: data.description,
+        category: { id: selectedCategory.id, name: selectedCategory.name },
+        image: imageFile,
+      };
+
+      const newProduct = createNewProduct(newProductData, imageUrl);
 
       await mutateAsync(newProduct);
 
+      reset();
       onClose();
     } catch (error: any) {
       console.error('물품 등록에 실패했습니다.', error);
-      setError(error.message || '물품 등록에 실패했습니다.');
+      setSubmissionError(error.message || '물품 등록에 실패했습니다.');
     }
   };
 
@@ -88,57 +100,85 @@ export const ProductRegistrationModal: React.FC<
         <DialogHeader>
           <DialogTitle>상품 등록</DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <Input
-            name="title"
-            placeholder="상품명"
-            onChange={handleChange}
-            value={product.title || ''}
-          />
-          <Input
-            name="price"
-            type="number"
-            placeholder="가격"
-            onChange={handleChange}
-            value={product.price || ''}
-          />
-          <Textarea
-            name="description"
-            placeholder="상품 설명"
-            onChange={handleChange}
-            value={product.description || ''}
-          />
-          <Select
-            name="categoryId"
-            onValueChange={handleCategoryChange}
-            value={product.category.id || ''}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="카테고리 선택" />
-            </SelectTrigger>
-            <SelectContent>
-              {categories
-                .filter((category) => category.id !== ALL_CATEGORY_ID)
-                .map((category) => (
-                  <SelectItem key={category.id} value={category.id}>
-                    {category.name}
-                  </SelectItem>
-                ))}
-            </SelectContent>
-          </Select>
-          <Input
-            className="cursor-pointer"
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-          />
-        </div>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        <DialogFooter>
-          <Button onClick={handleSubmit} disabled={isLoading}>
-            {isLoading ? '등록 중...' : '등록'}
-          </Button>
-        </DialogFooter>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="grid gap-4 py-4">
+            <Input
+              {...register('title', { required: '상품명을 입력해주세요.' })}
+              placeholder="상품명"
+            />
+            {errors.title && (
+              <p className="text-red-500 text-sm">{errors.title.message}</p>
+            )}
+            <Input
+              type="number"
+              {...register('price', { required: '가격을 입력해주세요.' })}
+              placeholder="가격"
+            />
+            {errors.price && (
+              <p className="text-red-500 text-sm">{errors.price.message}</p>
+            )}
+            <Textarea
+              {...register('description', {
+                required: '상품 설명을 입력해주세요.',
+              })}
+              placeholder="상품 설명"
+            />
+            {errors.description && (
+              <p className="text-red-500 text-sm">
+                {errors.description.message}
+              </p>
+            )}
+            <Controller
+              name="categoryId"
+              control={control}
+              defaultValue=""
+              rules={{ required: '카테고리를 선택해주세요.' }}
+              render={({ field }) => (
+                <>
+                  <Select
+                    onValueChange={(value) => field.onChange(value)}
+                    value={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="카테고리 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories
+                        .filter((category) => category.id !== ALL_CATEGORY_ID)
+                        .map((category) => (
+                          <SelectItem key={category.id} value={category.id}>
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.categoryId && (
+                    <p className="text-red-500 text-sm">
+                      {errors.categoryId.message}
+                    </p>
+                  )}
+                </>
+              )}
+            />
+            <Input
+              className="cursor-pointer"
+              type="file"
+              accept="image/*"
+              {...register('image', { required: '이미지를 선택해주세요.' })}
+            />
+            {errors.image && (
+              <p className="text-red-500 text-sm">{errors.image.message}</p>
+            )}
+          </div>
+          {submissionError && (
+            <p className="text-red-500 text-sm">{submissionError}</p>
+          )}
+          <DialogFooter>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? '등록 중...' : '등록'}
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
