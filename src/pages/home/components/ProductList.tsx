@@ -6,15 +6,15 @@ import { useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { useCartStore } from '@/store/cart/useCartStore';
-import { useFilterStore } from '@/store/filter/useFilterStore';
-import { useProductStore } from '@/store/product/useProductStore';
 
-import { Product } from '@/api/dtos/productDTO';
 import { pageRoutes } from '@/apiRoutes';
 import { PRODUCT_PAGE_SIZE } from '@/constants';
 import { extractIndexLink, isFirebaseIndexError } from '@/helpers/error';
 import { useModal } from '@/hooks/useModal';
-import { CartItem } from '@/types/cartType';
+import { Product } from '@/lib/product';
+import { useFetchProducts } from '@/lib/product/hooks/useFetchProducts';
+import { CartItem } from '@/store/cart/types';
+
 import { ProductCardSkeleton } from '../skeletons/ProductCardSkeleton';
 import { EmptyProduct } from './EmptyProduct';
 import { ProductCard } from './ProductCard';
@@ -29,50 +29,32 @@ export const ProductList: React.FC<ProductListProps> = ({
 }) => {
   const navigate = useNavigate();
   const { isOpen, openModal, closeModal } = useModal();
-  const [currentPage, setCurrentPage] = useState<number>(1);
   const [isIndexErrorModalOpen, setIsIndexErrorModalOpen] =
     useState<boolean>(false);
   const [indexLink, setIndexLink] = useState<string | null>(null);
 
-  const { minPrice, maxPrice, title, categoryId } = useFilterStore();
   const { isLogin, user } = useAuthStore();
-
-  const products = useProductStore((state) => state.items);
-  const hasNextPage = useProductStore((state) => state.hasNextPage);
-  const isLoading = useProductStore((state) => state.isLoading);
-  const totalCount = useProductStore((state) => state.totalCount);
-  const error = useProductStore((state) => state.error);
-  const loadProducts = useProductStore((state) => state.loadProducts);
-
   const addCartItem = useCartStore((state) => state.addCartItem);
 
-  const loadProductsData = async (isInitial = false): Promise<void> => {
-    try {
-      const page = isInitial ? 1 : currentPage + 1;
-      await loadProducts({
-        filter: { minPrice, maxPrice, title, categoryId },
-        pageSize,
-        page,
-        isInitial,
-      });
-      if (!isInitial) {
-        setCurrentPage(page);
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    error,
+  } = useFetchProducts({ pageSize });
+
+  useEffect(() => {
+    if (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+
+      if (isFirebaseIndexError(errorMessage)) {
+        const link = extractIndexLink(errorMessage);
+        setIndexLink(link);
+        setIsIndexErrorModalOpen(true);
       }
-    } catch (error) {
-      console.error('Error loading products:', error);
-    }
-  };
-
-  useEffect(() => {
-    setCurrentPage(1);
-    loadProductsData(true);
-  }, [minPrice, maxPrice, title, categoryId]);
-
-  useEffect(() => {
-    if (error && isFirebaseIndexError(error)) {
-      const link = extractIndexLink(error);
-      setIndexLink(link);
-      setIsIndexErrorModalOpen(true);
     }
   }, [error]);
 
@@ -96,12 +78,7 @@ export const ProductList: React.FC<ProductListProps> = ({
     }
   };
 
-  const handleProductAdded = (): void => {
-    setCurrentPage(1);
-    loadProductsData(true);
-  };
-
-  const firstProductImage = products[0]?.image;
+  const firstProductImage = data?.pages[0]?.products[0]?.image;
 
   useEffect(() => {
     if (firstProductImage) {
@@ -111,7 +88,7 @@ export const ProductList: React.FC<ProductListProps> = ({
   }, [firstProductImage]);
 
   const renderContent = (): JSX.Element => {
-    if (isLoading && products.length === 0) {
+    if (isLoading) {
       return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {Array.from({ length: pageSize }, (_, index) => (
@@ -120,6 +97,8 @@ export const ProductList: React.FC<ProductListProps> = ({
         </div>
       );
     }
+
+    const products = data ? data.pages.flatMap((page) => page.products) : [];
 
     if (products.length === 0) {
       return <EmptyProduct onAddProduct={openModal} />;
@@ -143,10 +122,13 @@ export const ProductList: React.FC<ProductListProps> = ({
             />
           ))}
         </div>
-        {hasNextPage && currentPage * pageSize < totalCount && (
+        {hasNextPage && (
           <div className="flex justify-center mt-4">
-            <Button onClick={() => loadProductsData()} disabled={isLoading}>
-              {isLoading ? '로딩 중...' : '더 보기'}
+            <Button
+              onClick={() => fetchNextPage()}
+              disabled={isFetchingNextPage}
+            >
+              {isFetchingNextPage ? '로딩 중...' : '더 보기'}
               <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </div>
@@ -165,11 +147,7 @@ export const ProductList: React.FC<ProductListProps> = ({
         </div>
         {renderContent()}
         {isOpen && (
-          <ProductRegistrationModal
-            isOpen={isOpen}
-            onClose={closeModal}
-            onProductAdded={handleProductAdded}
-          />
+          <ProductRegistrationModal isOpen={isOpen} onClose={closeModal} />
         )}
         <FirebaseIndexErrorModal
           isOpen={isIndexErrorModalOpen}

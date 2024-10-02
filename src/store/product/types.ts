@@ -1,5 +1,4 @@
-import { NewProductDTO, Product } from '@/api/dtos/productDTO';
-import { ProductFilter } from '@/types/productType';
+import { Product } from '@/lib/product';
 
 export interface ProductStore {
   items: Product[];
@@ -7,11 +6,19 @@ export interface ProductStore {
   isLoading: boolean;
   error: string | null;
   totalCount: number;
-  loadProducts: (params: {
-    filter: ProductFilter;
-    pageSize: number;
-    page: number;
-    isInitial: boolean;
-  }) => Promise<void>;
-  addProduct: (productData: NewProductDTO) => Promise<void>;
+}
+
+export interface ProductSliceState {
+  items: Product[];
+  hasNextPage: boolean;
+  isLoading: boolean;
+  error: string | null;
+  totalCount: number;
+}
+
+export interface ProductFilter {
+  categoryId: string;
+  title?: string;
+  minPrice?: number;
+  maxPrice?: number;
 }

@@ -1,6 +1,4 @@
-import { CartItem } from '@/types/cartType';
-
-export interface CartStore {
+export interface CartState {
   cart: CartItem[];
   totalCount: number;
   totalPrice: number;
@@ -13,4 +11,17 @@ export interface CartStore {
     count: number;
     userId: string;
   }) => void;
+}
+
+export interface CartItem {
+  id: string;
+  image: string;
+  title: string;
+  price: number;
+  count: number;
+}
+
+export interface Total {
+  totalCount: number;
+  totalPrice: number;
 }

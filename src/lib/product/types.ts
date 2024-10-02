@@ -13,6 +13,7 @@ export interface PaginatedProductsDTO {
   products: Product[];
   hasNextPage: boolean;
   totalCount: number;
+  nextPage?: number;
 }
 
 export interface NewProductDTO {

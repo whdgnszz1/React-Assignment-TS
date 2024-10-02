@@ -1,24 +1,8 @@
-import { registerUserAPI } from '@/api/auth';
 import { auth } from '@/firebase';
-import { UserDTO } from '@/types/authType';
+import { UserDTO } from '@/lib/auth';
 import Cookies from 'js-cookie';
 import { create } from 'zustand';
-
-interface AuthState {
-  isLogin: boolean;
-  user: UserDTO | null;
-  checkLoginStatus: () => Promise<void>;
-  registerStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
-  registerError: string | null;
-  registerUser: (
-    email: string,
-    password: string,
-    name: string
-  ) => Promise<void>;
-  logout: () => void;
-  setIsLogin: (isLogin: boolean) => void;
-  setUser: (user: UserDTO) => void;
-}
+import { AuthState } from './types';
 
 export const useAuthStore = create<AuthState>((set) => ({
   isLogin: !!Cookies.get('accessToken'),
@@ -55,30 +39,11 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
-  registerUser: async (email: string, password: string, name: string) => {
-    set({ registerStatus: 'loading', registerError: null });
-    try {
-      const user = await registerUserAPI({ email, password, name });
-      set({
-        user,
-        isLogin: true,
-        registerStatus: 'succeeded',
-      });
-    } catch (error: any) {
-      set({
-        registerStatus: 'failed',
-        registerError: error.message || 'Registration failed',
-      });
-    }
-  },
-
   logout: () => {
     Cookies.remove('accessToken');
     set({
       isLogin: false,
       user: null,
-      registerStatus: 'idle',
-      registerError: null,
     });
   },
 

@@ -4,14 +4,13 @@ import { Loader2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { makePurchase } from '@/api/purchase';
-import { pageRoutes } from '@/apiRoutes';
-
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { calculateTotal } from '@/store/cart/cartUtils';
 import { useCartStore } from '@/store/cart/useCartStore';
-import { usePurchaseStore } from '@/store/purchase/usePurchaseStore';
 
+import { useMakePurchase } from '@/lib/purchase/hooks/useMakePurchase';
+
+import { pageRoutes } from '@/apiRoutes';
 import { PHONE_PATTERN } from '@/constants';
 import { Layout, authStatusType } from '@/pages/common/components/Layout';
 import { ItemList } from '@/pages/purchase/components/ItemList';
@@ -37,9 +36,6 @@ export const Purchase: React.FC = () => {
   const cart = useCartStore((state) => state.cart);
   const resetCart = useCartStore((state) => state.resetCart);
   const initCart = useCartStore((state) => state.initCart);
-
-  const { isLoading, purchaseFailure, purchaseStart, purchaseSuccess } =
-    usePurchaseStore();
 
   const [formData, setFormData] = useState<FormData>({
     name: user?.displayName ?? '',
@@ -70,11 +66,12 @@ export const Purchase: React.FC = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleClickPurchase = async (e: React.FormEvent<HTMLFormElement>) => {
+  const { mutate: makePurchaseMutation, isPending: isLoading } =
+    useMakePurchase();
+
+  const handleClickPurchase = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isFormValid || !user) return;
-
-    purchaseStart();
 
     const cartItems = Object.values(cart);
 
@@ -89,26 +86,26 @@ export const Purchase: React.FC = () => {
       items: cartItems,
     };
 
-    try {
-      await makePurchase(purchaseData, user.uid, cartItems);
-      purchaseSuccess();
-      if (user.uid) {
-        resetCart(user.uid);
+    makePurchaseMutation(
+      {
+        purchaseData,
+        userId: user.uid,
+        cartData: cartItems,
+      },
+      {
+        onSuccess: () => {
+          resetCart(user.uid);
+          console.log('구매 성공!');
+          navigate(pageRoutes.main);
+        },
+        onError: (error: Error) => {
+          console.error(
+            '잠시 문제가 발생했습니다! 다시 시도해 주세요.',
+            error.message
+          );
+        },
       }
-      console.log('구매 성공!');
-      navigate(pageRoutes.main);
-    } catch (err) {
-      if (err instanceof Error) {
-        purchaseFailure(err.message);
-        console.error(
-          '잠시 문제가 발생했습니다! 다시 시도해 주세요.',
-          err.message
-        );
-      } else {
-        purchaseFailure('알 수 없는 오류가 발생했습니다.');
-        console.error('잠시 문제가 발생했습니다! 다시 시도해 주세요.');
-      }
-    }
+    );
   };
 
   return (

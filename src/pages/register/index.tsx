@@ -2,13 +2,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Lock, Mail, User } from 'lucide-react';
-import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-import { useAuthStore } from '@/store/auth/useAuthStore';
 
 import { pageRoutes } from '@/apiRoutes';
 import { EMAIL_PATTERN } from '@/constants';
+import { useRegisterUser } from '@/lib/auth';
 import { Layout, authStatusType } from '@/pages/common/components/Layout';
 
 interface FormErrors {
@@ -20,18 +19,12 @@ interface FormErrors {
 export const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
 
-  const { registerStatus, registerError, registerUser } = useAuthStore();
+  const { mutate: registerUser, isPending: isLoading } = useRegisterUser();
 
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [errors, setErrors] = useState<FormErrors>({});
-
-  useEffect(() => {
-    if (registerStatus === 'succeeded') {
-      navigate(pageRoutes.login);
-    }
-  }, [registerStatus, navigate]);
 
   const validateForm = (): boolean => {
     let formErrors: FormErrors = {};
@@ -46,19 +39,24 @@ export const RegisterPage: React.FC = () => {
     return Object.keys(formErrors).length === 0;
   };
 
-  const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
+  const handleRegister = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validateForm()) {
-      try {
-        await registerUser(email, password, name);
-        console.log('가입 성공!');
-        navigate(pageRoutes.login);
-      } catch (error) {
-        console.error(
-          '회원가입 중 오류가 발생했습니다. 다시 시도해 주세요.',
-          error
-        );
-      }
+      registerUser(
+        { email, password, name },
+        {
+          onSuccess: () => {
+            console.log('가입 성공!');
+            navigate(pageRoutes.login);
+          },
+          onError: (error) => {
+            console.error(
+              '회원가입 중 오류가 발생했습니다. 다시 시도해 주세요.',
+              error
+            );
+          },
+        }
+      );
     }
   };
 
@@ -129,16 +127,9 @@ export const RegisterPage: React.FC = () => {
               <p className="text-sm text-red-500">{errors.password}</p>
             )}
           </div>
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={registerStatus === 'loading'}
-          >
-            {registerStatus === 'loading' ? '가입 중...' : '회원가입'}
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? '가입 중...' : '회원가입'}
           </Button>
-          {registerError && (
-            <p className="text-sm text-red-500">{registerError}</p>
-          )}
         </form>
       </div>
     </Layout>

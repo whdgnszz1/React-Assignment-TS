@@ -1,4 +1,3 @@
-import { CartItem } from '@/types/cartType';
 import { create } from 'zustand';
 import {
   calculateTotal,
@@ -6,9 +5,9 @@ import {
   resetCartAtLocalStorage,
   setCartToLocalStorage,
 } from './cartUtils';
-import { CartStore } from './types';
+import { CartItem, CartState } from './types';
 
-export const useCartStore = create<CartStore>((set) => ({
+export const useCartStore = create<CartState>((set) => ({
   cart: [] as CartItem[],
   totalCount: 0,
   totalPrice: 0,

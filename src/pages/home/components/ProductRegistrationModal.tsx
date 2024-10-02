@@ -17,26 +17,24 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { ChangeEvent, useState } from 'react';
 
-import { useProductStore } from '@/store/product/useProductStore';
+import { useAddProduct } from '@/lib/product/hooks/useAddProduct';
 
-import { NewProductDTO } from '@/api/dtos/productDTO';
 import { ALL_CATEGORY_ID, categories } from '@/constants';
 import { createNewProduct, initialProductState } from '@/helpers/product';
+import { NewProductDTO } from '@/lib/product';
 import { uploadImage } from '@/utils/imageUpload';
 
 interface ProductRegistrationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onProductAdded: () => void;
 }
 
 export const ProductRegistrationModal: React.FC<
   ProductRegistrationModalProps
-> = ({ isOpen, onClose, onProductAdded }) => {
-  const addProduct = useProductStore((state) => state.addProduct);
+> = ({ isOpen, onClose }) => {
+  const { mutateAsync, isPending: isLoading } = useAddProduct();
 
   const [product, setProduct] = useState<NewProductDTO>(initialProductState);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleChange = (
@@ -62,7 +60,6 @@ export const ProductRegistrationModal: React.FC<
   };
 
   const handleSubmit = async (): Promise<void> => {
-    setIsSubmitting(true);
     setError(null);
     try {
       if (!product.image) {
@@ -76,15 +73,12 @@ export const ProductRegistrationModal: React.FC<
 
       const newProduct = createNewProduct(product, imageUrl);
 
-      await addProduct(newProduct);
+      await mutateAsync(newProduct);
 
       onClose();
-      onProductAdded();
     } catch (error: any) {
       console.error('물품 등록에 실패했습니다.', error);
       setError(error.message || '물품 등록에 실패했습니다.');
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -141,8 +135,8 @@ export const ProductRegistrationModal: React.FC<
         </div>
         {error && <p className="text-red-500 text-sm">{error}</p>}
         <DialogFooter>
-          <Button onClick={handleSubmit} disabled={isSubmitting}>
-            {isSubmitting ? '등록 중...' : '등록'}
+          <Button onClick={handleSubmit} disabled={isLoading}>
+            {isLoading ? '등록 중...' : '등록'}
           </Button>
         </DialogFooter>
       </DialogContent>

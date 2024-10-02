@@ -1,6 +1,6 @@
 import { getItem, setItem } from '@/helpers/localStorage';
-import { CartItem, Total } from '@/types/cartType';
 import { parseJSON } from '@/utils/common';
+import { CartItem, Total } from './types';
 
 const CART_LOCAL_STORAGE_KEY = 'CART_LOCAL_STORAGE_KEY';
 

@@ -1,17 +1,6 @@
 import { ALL_CATEGORY_ID } from '@/constants';
 import { create } from 'zustand';
-
-interface FilterState {
-  minPrice: number;
-  maxPrice: number;
-  title: string;
-  categoryId: string;
-  setMinPrice: (price: number) => void;
-  setMaxPrice: (price: number) => void;
-  setTitle: (title: string) => void;
-  setCategoryId: (categoryId: string) => void;
-  resetFilter: () => void;
-}
+import { FilterState } from './types';
 
 export const useFilterStore = create<FilterState>((set) => ({
   minPrice: 0,

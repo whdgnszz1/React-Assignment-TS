@@ -1,14 +1,14 @@
 import { db } from '@/firebase';
+import { CartItem } from '@/store/cart/types';
 import {
   collection,
   doc,
   runTransaction,
   serverTimestamp,
 } from 'firebase/firestore';
-import { CartItemDTO, PurchaseDTO } from './dtos/purchaseDTO';
-import { CartItem } from '@/types/cartType';
+import { CartItemDTO, PurchaseDTO } from '.';
 
-export const makePurchase = async (
+export const makePurchaseAPI = async (
   purchaseData: PurchaseDTO,
   userId: string,
   cartData: CartItem[]

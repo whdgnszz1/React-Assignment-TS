@@ -1,6 +1,6 @@
 import { ALL_CATEGORY_ID } from '@/constants';
 import { db } from '@/firebase';
-import { ProductFilter } from '@/types/productType';
+import { ProductFilter } from '@/store/product/types';
 import {
   collection,
   doc,
@@ -12,11 +12,7 @@ import {
   serverTimestamp,
   where,
 } from 'firebase/firestore';
-import {
-  NewProductDTO,
-  PaginatedProductsDTO,
-  Product,
-} from './dtos/productDTO';
+import { NewProductDTO, PaginatedProductsDTO, Product } from './types';
 
 export const fetchProducts = async (
   filter: ProductFilter,
@@ -25,7 +21,7 @@ export const fetchProducts = async (
 ): Promise<PaginatedProductsDTO> => {
   try {
     let q = query(collection(db, 'products'), orderBy('id', 'desc'));
-
+    console.log(q);
     if (filter.categoryId && filter.categoryId !== ALL_CATEGORY_ID) {
       q = query(q, where('category.id', '==', filter.categoryId));
     }
@@ -71,8 +67,9 @@ export const fetchProducts = async (
     const paginatedProducts = products.slice(startIndex, endIndex);
 
     const hasNextPage = endIndex < totalCount;
+    const nextPage = hasNextPage ? page + 1 : undefined;
 
-    return { products: paginatedProducts, hasNextPage, totalCount };
+    return { products: paginatedProducts, hasNextPage, totalCount, nextPage };
   } catch (error) {
     console.error('Error fetching products: ', error);
     throw error;
