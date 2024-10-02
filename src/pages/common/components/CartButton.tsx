@@ -3,7 +3,7 @@ import { ShoppingCart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 import { pageRoutes } from '@/apiRoutes';
-import { CartItem } from '@/types/cartType';
+import { CartItem } from '@/store/cart/types';
 
 export const CartButton = ({ cart }: { cart: CartItem[] }) => {
   const navigate = useNavigate();

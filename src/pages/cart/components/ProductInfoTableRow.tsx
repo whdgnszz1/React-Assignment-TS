@@ -6,9 +6,9 @@ import { Trash2 } from 'lucide-react';
 import { useCartStore } from '@/store/cart/useCartStore';
 
 import { MAX_CART_VALUE } from '@/constants';
+import { UserDTO } from '@/lib/auth';
 import { cartValidationMessages } from '@/messages';
-import { UserDTO } from '@/types/authType';
-import { CartItem } from '@/types/cartType';
+import { CartItem } from '@/store/cart/types';
 import { formatPrice } from '@/utils/formatter';
 
 interface ProductInfoTableRowProps {
