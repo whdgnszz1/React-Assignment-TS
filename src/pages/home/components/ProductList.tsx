@@ -1,7 +1,14 @@
 import { Button } from '@/components/ui/button';
 import { FirebaseIndexErrorModal } from '@/pages/error/components/FirebaseIndexErrorModal';
 import { ChevronDown, Plus } from 'lucide-react';
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import {
+  Suspense,
+  lazy,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '@/store/auth/useAuthStore';
@@ -15,11 +22,15 @@ import { Product } from '@/lib/product';
 import { useFetchProducts } from '@/lib/product/hooks/useFetchProducts';
 import { CartItem } from '@/store/cart/types';
 
+import { useToastStore } from '@/store/toast/useToastStore';
 import { ProductCardSkeleton } from '../skeletons/ProductCardSkeleton';
 import { EmptyProduct } from './EmptyProduct';
 import { ProductCard } from './ProductCard';
-import { ProductRegistrationModal } from './ProductRegistrationModal';
-import { useToastStore } from '@/store/toast/useToastStore';
+const ProductRegistrationModal = lazy(() =>
+  import('./ProductRegistrationModal').then((module) => ({
+    default: module.ProductRegistrationModal,
+  }))
+);
 
 interface ProductListProps {
   pageSize?: number;
@@ -155,9 +166,11 @@ export const ProductList: React.FC<ProductListProps> = ({
           </Button>
         </div>
         {renderContent()}
-        {isOpen && (
-          <ProductRegistrationModal isOpen={isOpen} onClose={closeModal} />
-        )}
+        <Suspense fallback={<div>Loading...</div>}>
+          {isOpen && (
+            <ProductRegistrationModal isOpen={isOpen} onClose={closeModal} />
+          )}
+        </Suspense>
         <FirebaseIndexErrorModal
           isOpen={isIndexErrorModalOpen}
           onClose={() => setIsIndexErrorModalOpen(false)}
