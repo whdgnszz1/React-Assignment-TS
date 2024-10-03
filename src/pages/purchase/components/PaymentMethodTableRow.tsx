@@ -4,16 +4,10 @@ import { TableCell, TableRow } from '@/components/ui/table';
 import { Building, CreditCard, Smartphone, Wallet } from 'lucide-react';
 import { Controller, useFormContext } from 'react-hook-form';
 
-interface PaymentMethod {
-  value: string;
-  label: string;
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-}
-
-export const PaymentMethodTableRow: React.FC = () => {
+export const PaymentMethodTableRow = () => {
   const { control } = useFormContext();
 
-  const paymentMethods: PaymentMethod[] = [
+  const paymentMethods = [
     { value: 'accountTransfer', label: '계좌이체', icon: Building },
     { value: 'creditCard', label: '신용/체크카드', icon: CreditCard },
     { value: 'phone', label: '휴대폰', icon: Smartphone },

@@ -6,6 +6,7 @@ import {
   UploadMetadata,
 } from 'firebase/storage';
 import imageCompression from 'browser-image-compression';
+
 const MAX_WIDTH = 512;
 const MAX_HEIGHT = 512;
 const MAX_FILE_SIZE_MB = 1;

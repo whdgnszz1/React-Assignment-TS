@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { CreditCard } from 'lucide-react';
 import { useMemo } from 'react';
@@ -6,10 +7,10 @@ import { useMemo } from 'react';
 import { formatPrice } from '@/utils/formatter';
 
 import { useCartStore } from '@/store/cart/useCartStore';
-import { PaymentMethodTableRow } from './PaymentMethodTableRow';
-import { Label } from '@/components/ui/label';
 
-export const Payment: React.FC = () => {
+import { PaymentMethodTableRow } from './PaymentMethodTableRow';
+
+export const Payment = () => {
   const { totalPrice } = useCartStore();
   const shippingCost = 3000;
 
@@ -42,9 +43,9 @@ export const Payment: React.FC = () => {
               </TableCell>
               <TableCell>{getTotalPrice}</TableCell>
             </TableRow>
+            <PaymentMethodTableRow />
           </TableBody>
         </Table>
-        <PaymentMethodTableRow />
       </CardContent>
     </Card>
   );

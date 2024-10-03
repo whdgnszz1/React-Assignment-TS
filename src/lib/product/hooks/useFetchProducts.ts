@@ -21,8 +21,13 @@ export const useFetchProducts = ({
 
   return useInfiniteQuery<PaginatedProductsDTO, Error>({
     queryKey,
-    queryFn: ({ pageParam = 1 }) =>
-      fetchProducts(filter, pageSize, pageParam as number),
+    queryFn: async ({ pageParam = 1 }) => {
+      try {
+        return await fetchProducts(filter, pageSize, pageParam as number);
+      } catch (error) {
+        throw error;
+      }
+    },
     initialPageParam: 1,
     getNextPageParam: (lastPage) => lastPage.nextPage,
   });
