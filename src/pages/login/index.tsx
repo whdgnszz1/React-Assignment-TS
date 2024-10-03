@@ -2,15 +2,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Lock, Mail } from 'lucide-react';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import { pageRoutes } from '@/apiRoutes';
 import { EMAIL_PATTERN } from '@/constants';
-
 import { useLogin } from '@/lib/auth';
-
 import { Layout, authStatusType } from '@/pages/common/components/Layout';
 
 interface FormInputs {
@@ -21,7 +19,6 @@ interface FormInputs {
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-
   const { mutate: login, isPending: isLoading } = useLogin();
 
   const {
@@ -35,13 +32,16 @@ export const LoginPage: React.FC = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    login({ email: data.email, password: data.password });
-  };
+  const onSubmit: SubmitHandler<FormInputs> = useCallback(
+    (data) => {
+      login({ email: data.email, password: data.password });
+    },
+    [login]
+  );
 
-  const handleClickRegister = () => {
+  const handleClickRegister = useCallback(() => {
     navigate(pageRoutes.register);
-  };
+  }, [navigate]);
 
   return (
     <Layout authStatus={authStatusType.NEED_NOT_LOGIN}>

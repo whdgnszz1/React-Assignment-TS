@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Lock, Mail, User } from 'lucide-react';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { EMAIL_PATTERN } from '@/constants';
@@ -30,13 +30,16 @@ export const RegisterPage: React.FC = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    registerUser({
-      email: data.email,
-      password: data.password,
-      name: data.name,
-    });
-  };
+  const onSubmit: SubmitHandler<FormInputs> = useCallback(
+    (data) => {
+      registerUser({
+        email: data.email,
+        password: data.password,
+        name: data.name,
+      });
+    },
+    [registerUser]
+  );
 
   return (
     <Layout authStatus={authStatusType.NEED_NOT_LOGIN}>

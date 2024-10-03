@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { FirebaseIndexErrorModal } from '@/pages/error/components/FirebaseIndexErrorModal';
 import { ChevronDown, Plus } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '@/store/auth/useAuthStore';
@@ -60,34 +60,43 @@ export const ProductList: React.FC<ProductListProps> = ({
     }
   }, [error]);
 
-  const handleCartAction = (product: Product): void => {
-    if (isLogin && user) {
-      const cartItem: CartItem = { ...product, count: 1 };
-      addCartItem(cartItem, user.uid, 1);
-      addToast(`${product.title} 상품이 장바구니에 담겼습니다.`, 'success');
-    } else {
-      navigate(pageRoutes.login);
-    }
-  };
+  const handleCartAction = useCallback(
+    (product: Product): void => {
+      if (isLogin && user) {
+        const cartItem: CartItem = { ...product, count: 1 };
+        addCartItem(cartItem, user.uid, 1);
+        addToast(`${product.title} 상품이 장바구니에 담겼습니다.`, 'success');
+      } else {
+        navigate(pageRoutes.login);
+      }
+    },
+    [isLogin, user, addCartItem, addToast, navigate]
+  );
 
-  const handlePurchaseAction = (product: Product): void => {
-    if (isLogin && user) {
-      const cartItem: CartItem = { ...product, count: 1 };
-      addCartItem(cartItem, user.uid, 1);
-      navigate(pageRoutes.cart);
-    } else {
-      navigate(pageRoutes.login);
-    }
-  };
+  const handlePurchaseAction = useCallback(
+    (product: Product): void => {
+      if (isLogin && user) {
+        const cartItem: CartItem = { ...product, count: 1 };
+        addCartItem(cartItem, user.uid, 1);
+        navigate(pageRoutes.cart);
+      } else {
+        navigate(pageRoutes.login);
+      }
+    },
+    [isLogin, user, addCartItem, navigate]
+  );
 
   const firstProductImage = data?.pages[0]?.products[0]?.image;
-
   useEffect(() => {
     if (firstProductImage) {
       const img = new Image();
       img.src = firstProductImage;
     }
   }, [firstProductImage]);
+
+  const products = useMemo(() => {
+    return data ? data.pages.flatMap((page) => page.products) : [];
+  }, [data]);
 
   const renderContent = (): JSX.Element => {
     if (isLoading) {
@@ -99,8 +108,6 @@ export const ProductList: React.FC<ProductListProps> = ({
         </div>
       );
     }
-
-    const products = data ? data.pages.flatMap((page) => page.products) : [];
 
     if (products.length === 0) {
       return <EmptyProduct onAddProduct={openModal} />;

@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback, useMemo } from 'react';
 
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { calculateTotal } from '@/store/cart/cartUtils';
@@ -55,31 +55,34 @@ export const Purchase: React.FC = () => {
   const { mutate: makePurchaseMutation, isPending: isLoading } =
     useMakePurchase();
 
-  const onSubmit: SubmitHandler<FormData> = (data) => {
-    if (!user) return;
+  const onSubmit: SubmitHandler<FormData> = useCallback(
+    (data) => {
+      if (!user) return;
 
-    const cartItems = Object.values(cart);
-    const total = calculateTotal(cart);
-    const totalAmount = total.totalPrice;
+      const cartItems = Object.values(cart);
+      const total = calculateTotal(cart);
+      const totalAmount = total.totalPrice;
 
-    const purchaseData = {
-      ...data,
-      totalAmount,
-      paymentMethod: data.payment,
-      shippingAddress: data.address,
-      items: cartItems.map((item) => ({
-        productId: item.id,
-        quantity: item.count,
-        price: item.price,
-      })),
-    };
+      const purchaseData = {
+        ...data,
+        totalAmount,
+        paymentMethod: data.payment,
+        shippingAddress: data.address,
+        items: cartItems.map((item) => ({
+          productId: item.id,
+          quantity: item.count,
+          price: item.price,
+        })),
+      };
 
-    makePurchaseMutation({
-      purchaseData,
-      userId: user.uid,
-      cartData: cartItems,
-    });
-  };
+      makePurchaseMutation({
+        purchaseData,
+        userId: user.uid,
+        cartData: cartItems,
+      });
+    },
+    [cart, makePurchaseMutation, user]
+  );
 
   return (
     <FormProvider {...methods}>

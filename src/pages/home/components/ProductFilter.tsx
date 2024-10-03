@@ -1,11 +1,11 @@
 import { Card, CardContent } from '@/components/ui/card';
-import debounce from 'lodash/debounce';
 import { Loader2 } from 'lucide-react';
-import { Suspense, useEffect, useMemo, useState } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useFilterStore } from '@/store/filter/useFilterStore';
 
 import { ApiErrorBoundary } from '@/pages/common/components/ApiErrorBoundary';
+import { debounce } from '@/utils/common';
 import { CategoryRadioGroup } from './CategoryRadioGroup';
 import { PriceRange } from './PriceRange';
 import { SearchBar } from './SearchBar';
@@ -41,39 +41,44 @@ export const ProductFilter = () => {
 
   useEffect(() => {
     debouncedSetTitle(searchValue);
-    return () => {
-      debouncedSetTitle.cancel();
-    };
   }, [searchValue, debouncedSetTitle]);
 
-  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value);
-  };
-
-  const handlePriceChange =
-    (actionCreator: (value: number) => void) =>
+  const handleChangeInput = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      if (value === '') {
-        actionCreator(-1);
-      } else {
-        const numericValue = Math.max(0, parseInt(value, 10));
-        if (!isNaN(numericValue)) {
-          actionCreator(numericValue);
+      setSearchValue(e.target.value);
+    },
+    []
+  );
+
+  const handlePriceChange = useCallback(
+    (actionCreator: (value: number) => void) =>
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        if (value === '') {
+          actionCreator(-1);
+        } else {
+          const numericValue = Math.max(0, parseInt(value, 10));
+          if (!isNaN(numericValue)) {
+            actionCreator(numericValue);
+          }
         }
-      }
-    };
+      },
+    []
+  );
 
   const handleMinPrice = handlePriceChange(setMinPrice);
   const handleMaxPrice = handlePriceChange(setMaxPrice);
 
-  const handleChangeCategory = (value: string) => {
-    if (value !== undefined) {
-      setCategoryId(value);
-    } else {
-      console.error('카테고리가 설정되지 않았습니다.');
-    }
-  };
+  const handleChangeCategory = useCallback(
+    (value: string) => {
+      if (value !== undefined) {
+        setCategoryId(value);
+      } else {
+        console.error('카테고리가 설정되지 않았습니다.');
+      }
+    },
+    [setCategoryId]
+  );
 
   return (
     <div className="space-y-4">

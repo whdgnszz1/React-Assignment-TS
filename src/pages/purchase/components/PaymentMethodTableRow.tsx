@@ -11,10 +11,7 @@ interface PaymentMethod {
 }
 
 export const PaymentMethodTableRow: React.FC = () => {
-  const {
-    control,
-    formState: { errors },
-  } = useFormContext();
+  const { control } = useFormContext();
 
   const paymentMethods: PaymentMethod[] = [
     { value: 'accountTransfer', label: '계좌이체', icon: Building },
@@ -25,7 +22,7 @@ export const PaymentMethodTableRow: React.FC = () => {
 
   return (
     <TableRow>
-      <TableCell className="font-bold">
+      <TableCell className="font-bold w-[120px]">
         <Label className="flex items-center">
           <CreditCard className="mr-2 h-4 w-4" />
           결제 방법
@@ -57,10 +54,6 @@ export const PaymentMethodTableRow: React.FC = () => {
             </RadioGroup>
           )}
         />
-        {errors.payment?.message &&
-          typeof errors.payment.message === 'string' && (
-            <p className="text-sm text-red-500">{errors.payment.message}</p>
-          )}
       </TableCell>
     </TableRow>
   );

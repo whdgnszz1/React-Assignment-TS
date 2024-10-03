@@ -29,7 +29,9 @@ export const PhoneTableRow: React.FC = () => {
           })}
         />
         {errors.phone?.message && typeof errors.phone.message === 'string' && (
-          <p className="text-sm text-red-500">{errors.phone.message}</p>
+          <p className="text-sm text-red-500 mt-[10px]">
+            {errors.phone.message}
+          </p>
         )}
       </TableCell>
     </TableRow>
