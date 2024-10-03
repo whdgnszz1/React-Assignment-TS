@@ -5,9 +5,9 @@ import {
   resetCartAtLocalStorage,
   setCartToLocalStorage,
 } from './cartUtils';
-import { CartItem, CartState } from './types';
+import { CartItem, CartStore } from './types';
 
-export const useCartStore = create<CartState>((set) => ({
+export const useCartStore = create<CartStore>((set) => ({
   cart: [] as CartItem[],
   totalCount: 0,
   totalPrice: 0,

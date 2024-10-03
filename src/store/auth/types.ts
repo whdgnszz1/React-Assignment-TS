@@ -1,6 +1,6 @@
 import { UserDTO } from '@/lib/auth';
 
-export interface AuthState {
+export interface AuthStore {
   isLogin: boolean;
   user: UserDTO | null;
   checkLoginStatus: () => Promise<void>;

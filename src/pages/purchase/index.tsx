@@ -2,7 +2,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { calculateTotal } from '@/store/cart/cartUtils';
@@ -10,7 +9,6 @@ import { useCartStore } from '@/store/cart/useCartStore';
 
 import { useMakePurchase } from '@/lib/purchase/hooks/useMakePurchase';
 
-import { pageRoutes } from '@/apiRoutes';
 import { Layout, authStatusType } from '@/pages/common/components/Layout';
 import { ItemList } from '@/pages/purchase/components/ItemList';
 import { Payment } from '@/pages/purchase/components/Payment';
@@ -33,9 +31,8 @@ export interface FormErrors {
 }
 
 export const Purchase: React.FC = () => {
-  const navigate = useNavigate();
   const { user } = useAuthStore();
-  const { cart, resetCart, initCart } = useCartStore();
+  const { cart, initCart } = useCartStore();
 
   const methods = useForm<FormData>({
     defaultValues: {
@@ -77,23 +74,11 @@ export const Purchase: React.FC = () => {
       })),
     };
 
-    makePurchaseMutation(
-      {
-        purchaseData,
-        userId: user.uid,
-        cartData: cartItems,
-      },
-      {
-        onSuccess: () => {
-          resetCart(user.uid);
-          console.log('구매 성공!');
-          navigate(pageRoutes.main);
-        },
-        onError: (error: Error) => {
-          console.error('구매 중 오류가 발생했습니다.', error.message);
-        },
-      }
-    );
+    makePurchaseMutation({
+      purchaseData,
+      userId: user.uid,
+      cartData: cartItems,
+    });
   };
 
   return (

@@ -19,6 +19,7 @@ import { ProductCardSkeleton } from '../skeletons/ProductCardSkeleton';
 import { EmptyProduct } from './EmptyProduct';
 import { ProductCard } from './ProductCard';
 import { ProductRegistrationModal } from './ProductRegistrationModal';
+import { useToastStore } from '@/store/toast/useToastStore';
 
 interface ProductListProps {
   pageSize?: number;
@@ -34,7 +35,8 @@ export const ProductList: React.FC<ProductListProps> = ({
   const [indexLink, setIndexLink] = useState<string | null>(null);
 
   const { isLogin, user } = useAuthStore();
-  const addCartItem = useCartStore((state) => state.addCartItem);
+  const { addToast } = useToastStore();
+  const { addCartItem } = useCartStore();
 
   const {
     data,
@@ -62,7 +64,7 @@ export const ProductList: React.FC<ProductListProps> = ({
     if (isLogin && user) {
       const cartItem: CartItem = { ...product, count: 1 };
       addCartItem(cartItem, user.uid, 1);
-      console.log(`${product.title} 상품이 장바구니에 담겼습니다.`);
+      addToast(`${product.title} 상품이 장바구니에 담겼습니다.`, 'success');
     } else {
       navigate(pageRoutes.login);
     }

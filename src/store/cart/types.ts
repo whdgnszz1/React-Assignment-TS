@@ -1,4 +1,4 @@
-export interface CartState {
+export interface CartStore {
   cart: CartItem[];
   totalCount: number;
   totalPrice: number;

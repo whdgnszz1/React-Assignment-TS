@@ -2,9 +2,9 @@ import { auth } from '@/firebase';
 import { UserDTO } from '@/lib/auth';
 import Cookies from 'js-cookie';
 import { create } from 'zustand';
-import { AuthState } from './types';
+import { AuthStore } from './types';
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthStore>((set) => ({
   isLogin: !!Cookies.get('accessToken'),
   user: null,
   registerStatus: 'idle',

@@ -1,8 +1,8 @@
 import { ALL_CATEGORY_ID } from '@/constants';
 import { create } from 'zustand';
-import { FilterState } from './types';
+import { FilterStore } from './types';
 
-export const useFilterStore = create<FilterState>((set) => ({
+export const useFilterStore = create<FilterStore>((set) => ({
   minPrice: 0,
   maxPrice: 0,
   title: '',

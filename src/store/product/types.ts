@@ -8,14 +8,6 @@ export interface ProductStore {
   totalCount: number;
 }
 
-export interface ProductSliceState {
-  items: Product[];
-  hasNextPage: boolean;
-  isLoading: boolean;
-  error: string | null;
-  totalCount: number;
-}
-
 export interface ProductFilter {
   categoryId: string;
   title?: string;

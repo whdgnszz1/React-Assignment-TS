@@ -4,9 +4,7 @@ import { Label } from '@/components/ui/label';
 import { Lock, Mail, User } from 'lucide-react';
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 
-import { pageRoutes } from '@/apiRoutes';
 import { EMAIL_PATTERN } from '@/constants';
 import { useRegisterUser } from '@/lib/auth';
 import { Layout, authStatusType } from '@/pages/common/components/Layout';
@@ -18,15 +16,12 @@ interface FormInputs {
 }
 
 export const RegisterPage: React.FC = () => {
-  const navigate = useNavigate();
-
   const { mutate: registerUser, isPending: isLoading } = useRegisterUser();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setError,
   } = useForm<FormInputs>({
     defaultValues: {
       name: '',
@@ -36,30 +31,11 @@ export const RegisterPage: React.FC = () => {
   });
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    registerUser(
-      { email: data.email, password: data.password, name: data.name },
-      {
-        onSuccess: () => {
-          console.log('가입 성공!');
-          navigate(pageRoutes.login);
-        },
-        onError: (error: any) => {
-          if (
-            error.response &&
-            error.response.data &&
-            error.response.data.field
-          ) {
-            const { field, message } = error.response.data;
-            setError(field as keyof FormInputs, { type: 'server', message });
-          } else {
-            console.error(
-              '회원가입 중 오류가 발생했습니다. 다시 시도해 주세요.'
-            );
-            console.error('회원가입 중 오류가 발생했습니다.', error);
-          }
-        },
-      }
-    );
+    registerUser({
+      email: data.email,
+      password: data.password,
+      name: data.name,
+    });
   };
 
   return (

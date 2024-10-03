@@ -1,4 +1,4 @@
-export interface FilterState {
+export interface FilterStore {
   minPrice: number;
   maxPrice: number;
   title: string;

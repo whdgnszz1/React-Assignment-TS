@@ -21,7 +21,6 @@ export const fetchProducts = async (
 ): Promise<PaginatedProductsDTO> => {
   try {
     let q = query(collection(db, 'products'), orderBy('id', 'desc'));
-    console.log(q);
     if (filter.categoryId && filter.categoryId !== ALL_CATEGORY_ID) {
       q = query(q, where('category.id', '==', filter.categoryId));
     }

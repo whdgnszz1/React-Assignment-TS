@@ -23,6 +23,7 @@ import { useAddProduct } from '@/lib/product/hooks/useAddProduct';
 import { ALL_CATEGORY_ID, categories } from '@/constants';
 import { createNewProduct } from '@/helpers/product';
 import { NewProductDTO } from '@/lib/product';
+import { useToastStore } from '@/store/toast/useToastStore';
 import { uploadImage } from '@/utils/imageUpload';
 
 interface ProductRegistrationModalProps {
@@ -42,6 +43,7 @@ export const ProductRegistrationModal: React.FC<
   ProductRegistrationModalProps
 > = ({ isOpen, onClose }) => {
   const { mutateAsync, isPending: isLoading } = useAddProduct();
+  const { addToast } = useToastStore();
 
   const {
     register,
@@ -58,7 +60,6 @@ export const ProductRegistrationModal: React.FC<
       if (!data.image || data.image.length === 0) {
         throw new Error('이미지를 선택해야 합니다.');
       }
-
       const imageFile = data.image[0];
 
       const imageUrl = await uploadImage(imageFile);
@@ -86,9 +87,11 @@ export const ProductRegistrationModal: React.FC<
 
       await mutateAsync(newProduct);
 
+      addToast('물품 등록 성공!', 'success');
       reset();
       onClose();
     } catch (error: any) {
+      addToast('물픔 등록에 실패했습니다.', 'error');
       console.error('물품 등록에 실패했습니다.', error);
       setSubmissionError(error.message || '물품 등록에 실패했습니다.');
     }
