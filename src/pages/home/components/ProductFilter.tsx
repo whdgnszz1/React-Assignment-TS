@@ -40,8 +40,8 @@ export const ProductFilter = () => {
   const handlePriceChange = (
     actionCreator: typeof setMinPrice | typeof setMaxPrice
   ) =>
-    debounce((ev: React.ChangeEvent<HTMLInputElement>) => {
-      const value = ev.target.value;
+    debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
       if (value === '') {
         dispatch(actionCreator(-1));
       } else {
