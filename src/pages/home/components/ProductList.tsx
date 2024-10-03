@@ -131,12 +131,12 @@ export const ProductList: React.FC<ProductListProps> = ({
             <ProductCard
               key={`${product.id}_${index}`}
               product={product}
-              onClickAddCartButton={(ev: React.MouseEvent) => {
-                ev.stopPropagation();
+              onClickAddCartButton={(e: React.MouseEvent) => {
+                e.stopPropagation();
                 handleCartAction(product);
               }}
-              onClickPurchaseButton={(ev: React.MouseEvent) => {
-                ev.stopPropagation();
+              onClickPurchaseButton={(e: React.MouseEvent) => {
+                e.stopPropagation();
                 handlePurchaseAction(product);
               }}
             />

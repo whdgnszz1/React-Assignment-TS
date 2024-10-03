@@ -14,6 +14,7 @@ export const RequestsTableRow: React.FC = () => {
       <TableCell>
         <Textarea
           id="requests"
+          className="resize-none"
           placeholder="요청 사항을 입력하세요"
           {...register('requests')}
         />

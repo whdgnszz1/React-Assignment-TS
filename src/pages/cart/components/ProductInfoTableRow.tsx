@@ -33,10 +33,8 @@ export const ProductInfoTableRow = ({
     }
   };
 
-  const handleChangeCount = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    const newCount = Number(event.target.value);
+  const handleChangeCount = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const newCount = Number(e.target.value);
 
     if (newCount > MAX_CART_VALUE) {
       alert(cartValidationMessages.MAX_INPUT_VALUE);
