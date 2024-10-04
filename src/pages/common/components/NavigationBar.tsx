@@ -1,6 +1,6 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import Cookies from 'js-cookie';
-import { Suspense, useEffect, useMemo } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useModal } from '@/hooks/useModal';
@@ -9,7 +9,6 @@ import { useAuthStore } from '@/store/auth/useAuthStore';
 import { useCartStore } from '@/store/cart/useCartStore';
 
 import { pageRoutes } from '@/apiRoutes';
-import { pick } from '@/utils/common';
 
 import { ApiErrorBoundary } from '@/pages/common/components/ApiErrorBoundary';
 import { CartButton } from './CartButton';
@@ -20,14 +19,14 @@ import { LogoutButton } from './LogoutButton';
 export const NavigationBar = () => {
   const navigate = useNavigate();
   const { isOpen, openModal, closeModal } = useModal();
-  const { isLogin, user, logout, checkLoginStatus } = useAuthStore((state) =>
-    pick(state, 'isLogin', 'user', 'logout', 'checkLoginStatus')
-  );
 
-  const { cart, initCart } = useCartStore((state) =>
-    pick(state, 'cart', 'initCart')
-  );
-  const cartItems = useMemo(() => cart, [cart]);
+  const isLogin = useAuthStore((state) => state.isLogin);
+  const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
+  const checkLoginStatus = useAuthStore((state) => state.checkLoginStatus);
+
+  const cart = useCartStore((state) => state.cart);
+  const initCart = useCartStore((state) => state.initCart);
 
   useEffect(() => {
     checkLoginStatus();
@@ -68,7 +67,7 @@ export const NavigationBar = () => {
               {isLogin ? (
                 <ApiErrorBoundary>
                   <Suspense fallback={<Skeleton className="w-24 h-8" />}>
-                    <CartButton cart={cartItems} />
+                    <CartButton cart={cart} />
                     <LogoutButton onClick={handleLogout} />
                   </Suspense>
                 </ApiErrorBoundary>

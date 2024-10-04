@@ -10,14 +10,14 @@ import {
   LoginRequestDto,
   LoginResponseDto,
   RegisterUserReqDTO,
-  UserDTO,
+  IUser,
 } from './types';
 
 export const registerUserAPI = async ({
   email,
   password,
   name,
-}: RegisterUserReqDTO): Promise<UserDTO> => {
+}: RegisterUserReqDTO): Promise<IUser> => {
   const userCredential = await createUserWithEmailAndPassword(
     auth,
     email,

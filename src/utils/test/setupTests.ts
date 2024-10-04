@@ -47,11 +47,15 @@ vi.mock('firebase/firestore', async () => {
 
 vi.mock('zustand');
 
-vi.mock('js-cookie', () => ({
-  set: vi.fn(),
-  get: vi.fn(),
-  remove: vi.fn(),
-}));
+vi.mock(import('js-cookie'), async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    set: vi.fn(),
+    get: vi.fn(),
+    remove: vi.fn(),
+  };
+});
 
 vi.mock('@/firebase', async () => {
   const actualFirebase = await vi.importActual('@/firebase');
@@ -62,13 +66,9 @@ vi.mock('@/firebase', async () => {
   };
 });
 
-afterEach(() => {
-  vi.clearAllMocks();
-});
-
-afterAll(() => {
-  vi.resetAllMocks();
-});
+vi.mock('@/lib/product/hooks/useFetchProducts', () => ({
+  useFetchProducts: vi.fn(),
+}));
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
@@ -82,4 +82,12 @@ Object.defineProperty(window, 'matchMedia', {
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
   })),
+});
+
+afterEach(() => {
+  vi.clearAllMocks();
+});
+
+afterAll(() => {
+  vi.resetAllMocks();
 });

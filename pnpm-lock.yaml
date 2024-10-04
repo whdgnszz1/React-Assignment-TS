@@ -38,6 +38,9 @@ importers:
       '@tanstack/react-query-devtools':
         specifier: ^5.55.2
         version: 5.55.2(@tanstack/react-query@5.55.2(react@18.3.1))(react@18.3.1)
+      '@types/jest':
+        specifier: ^29.5.13
+        version: 29.5.13
       '@types/js-cookie':
         specifier: ^3.0.6
         version: 3.0.6
@@ -2162,6 +2165,9 @@ packages:
 
   '@types/istanbul-reports@3.0.4':
     resolution: {integrity: sha512-pk2B1NWalF9toCRu6gjBzR69syFjP4Od8WRAX+0mmf9lAjCRicLOWc+ZrxZHx/0XRjotgkF9t6iaMJ+aXcOdZQ==}
+
+  '@types/jest@29.5.13':
+    resolution: {integrity: sha512-wd+MVEZCHt23V0/L642O5APvspWply/rGY5BcW4SUETo2UzPU3Z26qr8jC2qxpimI2jjx9h7+2cj2FwIr01bXg==}
 
   '@types/js-cookie@3.0.6':
     resolution: {integrity: sha512-wkw9yd1kEXOPnvEeEV1Go1MmxtBJL0RR79aOTAApecWFVu7w0NNXNqhcWgvw2YgZDYadliXkl14pa3WXw5jlCQ==}
@@ -7841,6 +7847,11 @@ snapshots:
   '@types/istanbul-reports@3.0.4':
     dependencies:
       '@types/istanbul-lib-report': 3.0.3
+
+  '@types/jest@29.5.13':
+    dependencies:
+      expect: 29.7.0
+      pretty-format: 29.7.0
 
   '@types/js-cookie@3.0.6': {}
 

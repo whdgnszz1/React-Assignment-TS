@@ -3,30 +3,31 @@ import { Input } from '@/components/ui/input';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { Trash2 } from 'lucide-react';
 
-import { useCartStore } from '@/store/cart/useCartStore';
-
-import { UserDTO } from '@/lib/auth';
+import { IUser } from '@/lib/auth';
 import { CartItem } from '@/store/cart/types';
 
-import { formatPrice } from '@/utils/formatter';
-import { pick } from '@/utils/common';
 import { MAX_CART_VALUE } from '@/constants';
 import { cartValidationMessages } from '@/messages';
+import { formatPrice } from '@/utils/formatter';
 
 interface ProductInfoTableRowProps {
   item: CartItem;
-  user: UserDTO | null;
+  user: IUser | null;
+  removeCartItem: (id: string, userId: string) => void;
+  changeCartItemCount: (payload: {
+    itemId: string;
+    count: number;
+    userId: string;
+  }) => void;
 }
 
 export const ProductInfoTableRow = ({
   item,
   user,
+  removeCartItem,
+  changeCartItemCount,
 }: ProductInfoTableRowProps) => {
   const { id, title, count, image, price } = item;
-
-  const { removeCartItem, changeCartItemCount } = useCartStore((state) =>
-    pick(state, 'removeCartItem', 'changeCartItemCount')
-  );
 
   const handleClickDeleteItem = () => {
     if (user) {

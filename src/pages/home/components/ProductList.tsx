@@ -18,15 +18,14 @@ import { pageRoutes } from '@/apiRoutes';
 import { PRODUCT_PAGE_SIZE } from '@/constants';
 import { extractIndexLink, isFirebaseIndexError } from '@/helpers/error';
 import { useModal } from '@/hooks/useModal';
-import { Product } from '@/lib/product';
-import { useFetchProducts } from '@/lib/product/hooks/useFetchProducts';
+import { IProduct, useFetchProducts } from '@/lib/product';
 import { CartItem } from '@/store/cart/types';
 
 import { useToastStore } from '@/store/toast/useToastStore';
+import { pick } from '@/utils/common';
 import { ProductCardSkeleton } from '../skeletons/ProductCardSkeleton';
 import { EmptyProduct } from './EmptyProduct';
 import { ProductCard } from './ProductCard';
-import { pick } from '@/utils/common';
 const ProductRegistrationModal = lazy(() =>
   import('./ProductRegistrationModal').then((module) => ({
     default: module.ProductRegistrationModal,
@@ -46,11 +45,10 @@ export const ProductList: React.FC<ProductListProps> = ({
     useState<boolean>(false);
   const [indexLink, setIndexLink] = useState<string | null>(null);
 
-  const { isLogin, user } = useAuthStore((state) =>
-    pick(state, 'isLogin', 'user')
-  );
-  const { addToast } = useToastStore((state) => pick(state, 'addToast'));
-  const { addCartItem } = useCartStore((state) => pick(state, 'addCartItem'));
+  const user = useAuthStore((state) => state.user);
+  const isLogin = useAuthStore((state) => state.isLogin);
+  const addToast = useToastStore((state) => state.addToast);
+  const addCartItem = useCartStore((state) => state.addCartItem);
 
   const {
     data,
@@ -75,7 +73,7 @@ export const ProductList: React.FC<ProductListProps> = ({
   }, [error]);
 
   const handleCartAction = useCallback(
-    (product: Product): void => {
+    (product: IProduct): void => {
       if (isLogin && user) {
         const cartItem: CartItem = { ...product, count: 1 };
         addCartItem(cartItem, user.uid, 1);
@@ -88,7 +86,7 @@ export const ProductList: React.FC<ProductListProps> = ({
   );
 
   const handlePurchaseAction = useCallback(
-    (product: Product): void => {
+    (product: IProduct): void => {
       if (isLogin && user) {
         const cartItem: CartItem = { ...product, count: 1 };
         addCartItem(cartItem, user.uid, 1);
