@@ -32,7 +32,6 @@ const customRender = async (
   const renderResult = render(
     <QueryClientProvider client={queryClient}>
       <MemoryRouter {...routerProps}>{component}</MemoryRouter>
-      <Toast />
     </QueryClientProvider>
   );
 
