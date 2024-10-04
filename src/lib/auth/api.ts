@@ -7,17 +7,17 @@ import {
 import { doc, setDoc } from 'firebase/firestore';
 import Cookies from 'js-cookie';
 import {
+  IUser,
   LoginRequestDto,
   LoginResponseDto,
   RegisterUserReqDTO,
-  UserDTO,
 } from './types';
 
 export const registerUserAPI = async ({
   email,
   password,
   name,
-}: RegisterUserReqDTO): Promise<UserDTO> => {
+}: RegisterUserReqDTO): Promise<IUser> => {
   const userCredential = await createUserWithEmailAndPassword(
     auth,
     email,

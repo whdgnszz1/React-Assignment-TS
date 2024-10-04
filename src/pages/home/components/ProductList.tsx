@@ -1,14 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { FirebaseIndexErrorModal } from '@/pages/error/components/FirebaseIndexErrorModal';
 import { ChevronDown, Plus } from 'lucide-react';
-import {
-  Suspense,
-  lazy,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { Suspense, lazy, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuthStore } from '@/store/auth/useAuthStore';
@@ -18,15 +11,14 @@ import { pageRoutes } from '@/apiRoutes';
 import { PRODUCT_PAGE_SIZE } from '@/constants';
 import { extractIndexLink, isFirebaseIndexError } from '@/helpers/error';
 import { useModal } from '@/hooks/useModal';
-import { Product } from '@/lib/product';
-import { useFetchProducts } from '@/lib/product/hooks/useFetchProducts';
+import { IProduct, useFetchProducts } from '@/lib/product';
 import { CartItem } from '@/store/cart/types';
 
 import { useToastStore } from '@/store/toast/useToastStore';
 import { ProductCardSkeleton } from '../skeletons/ProductCardSkeleton';
 import { EmptyProduct } from './EmptyProduct';
 import { ProductCard } from './ProductCard';
-import { pick } from '@/utils/common';
+
 const ProductRegistrationModal = lazy(() =>
   import('./ProductRegistrationModal').then((module) => ({
     default: module.ProductRegistrationModal,
@@ -46,11 +38,10 @@ export const ProductList: React.FC<ProductListProps> = ({
     useState<boolean>(false);
   const [indexLink, setIndexLink] = useState<string | null>(null);
 
-  const { isLogin, user } = useAuthStore((state) =>
-    pick(state, 'isLogin', 'user')
-  );
-  const { addToast } = useToastStore((state) => pick(state, 'addToast'));
-  const { addCartItem } = useCartStore((state) => pick(state, 'addCartItem'));
+  const user = useAuthStore((state) => state.user);
+  const isLogin = useAuthStore((state) => state.isLogin);
+  const addToast = useToastStore((state) => state.addToast);
+  const addCartItem = useCartStore((state) => state.addCartItem);
 
   const {
     data,
@@ -75,7 +66,7 @@ export const ProductList: React.FC<ProductListProps> = ({
   }, [error]);
 
   const handleCartAction = useCallback(
-    (product: Product): void => {
+    (product: IProduct): void => {
       if (isLogin && user) {
         const cartItem: CartItem = { ...product, count: 1 };
         addCartItem(cartItem, user.uid, 1);
@@ -88,7 +79,7 @@ export const ProductList: React.FC<ProductListProps> = ({
   );
 
   const handlePurchaseAction = useCallback(
-    (product: Product): void => {
+    (product: IProduct): void => {
       if (isLogin && user) {
         const cartItem: CartItem = { ...product, count: 1 };
         addCartItem(cartItem, user.uid, 1);
@@ -108,72 +99,66 @@ export const ProductList: React.FC<ProductListProps> = ({
     }
   }, [firstProductImage]);
 
-  const products = useMemo(() => {
-    return data ? data.pages.flatMap((page) => page.products) : [];
-  }, [data]);
-
-  const renderContent = (): JSX.Element => {
-    if (isLoading) {
-      return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {Array.from({ length: pageSize }, (_, index) => (
-            <ProductCardSkeleton key={index} />
-          ))}
-        </div>
-      );
-    }
-
-    if (products.length === 0) {
-      return <EmptyProduct onAddProduct={openModal} />;
-    }
-
-    return (
-      <>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {products.map((product, index) => (
-            <ProductCard
-              key={`${product.id}_${index}`}
-              product={product}
-              onClickAddCartButton={(e: React.MouseEvent) => {
-                e.stopPropagation();
-                handleCartAction(product);
-              }}
-              onClickPurchaseButton={(e: React.MouseEvent) => {
-                e.stopPropagation();
-                handlePurchaseAction(product);
-              }}
-            />
-          ))}
-        </div>
-        {hasNextPage && (
-          <div className="flex justify-center mt-4">
-            <Button
-              onClick={() => fetchNextPage()}
-              disabled={isFetchingNextPage}
-            >
-              {isFetchingNextPage ? '로딩 중...' : '더 보기'}
-              <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
-        )}
-      </>
-    );
-  };
+  const products = data ? data.pages.flatMap((page) => page.products) : [];
 
   return (
     <>
       <div className="space-y-4">
         <div className="flex justify-end mt-4">
-          <Button onClick={openModal}>
-            <Plus className="mr-2 h-4 w-4" /> 상품 등록
-          </Button>
+          {isLogin && (
+            <Button onClick={openModal}>
+              <Plus className="mr-2 h-4 w-4" /> 상품 등록
+            </Button>
+          )}
         </div>
-        {renderContent()}
+
+        {isLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {Array.from({ length: pageSize }, (_, index) => (
+              <ProductCardSkeleton key={index} />
+            ))}
+          </div>
+        ) : products.length === 0 ? (
+          <EmptyProduct onAddProduct={openModal} />
+        ) : (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {products.map((product, index) => (
+                <ProductCard
+                  key={`${product.id}_${index}`}
+                  product={product}
+                  onClickAddCartButton={(e: React.MouseEvent) => {
+                    e.stopPropagation();
+                    handleCartAction(product);
+                  }}
+                  onClickPurchaseButton={(e: React.MouseEvent) => {
+                    e.stopPropagation();
+                    handlePurchaseAction(product);
+                  }}
+                />
+              ))}
+            </div>
+
+            {hasNextPage && (
+              <div className="flex justify-center mt-4">
+                <Button
+                  onClick={() => fetchNextPage()}
+                  disabled={isFetchingNextPage}
+                >
+                  {isFetchingNextPage ? '로딩 중...' : '더 보기'}
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            )}
+          </>
+        )}
+
         <Suspense fallback={<div>Loading...</div>}>
           {isOpen && (
             <ProductRegistrationModal isOpen={isOpen} onClose={closeModal} />
           )}
         </Suspense>
+
         <FirebaseIndexErrorModal
           isOpen={isIndexErrorModalOpen}
           onClose={() => setIsIndexErrorModalOpen(false)}

@@ -1,7 +1,7 @@
 import {
+  IProduct,
   NewProductDTO,
   PRODUCT_KEY,
-  Product,
   addProductAPI,
 } from '@/lib/product';
 import { useToastStore } from '@/store/toast/useToastStore';
@@ -12,7 +12,7 @@ export const useAddProduct = () => {
 
   const { addToast } = useToastStore();
 
-  return useMutation<Product, Error, NewProductDTO>({
+  return useMutation<IProduct, Error, NewProductDTO>({
     mutationFn: addProductAPI,
     onSuccess: () => {
       addToast('등록 성공!', 'success');

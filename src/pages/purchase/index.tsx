@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
-import React, { useEffect, useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { calculateTotal } from '@/store/cart/cartUtils';
@@ -15,7 +15,6 @@ import { Payment } from '@/pages/purchase/components/Payment';
 import { ShippingInformationForm } from '@/pages/purchase/components/ShippingInformationForm';
 
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { pick } from '@/utils/common';
 
 export interface FormData {
   name: string;
@@ -32,10 +31,9 @@ export interface FormErrors {
 }
 
 export const Purchase: React.FC = () => {
-  const { user } = useAuthStore((state) => pick(state, 'user'));
-  const { cart, initCart } = useCartStore((state) =>
-    pick(state, 'cart', 'initCart')
-  );
+  const user = useAuthStore((state) => state.user);
+  const cart = useCartStore((state) => state.cart);
+  const initCart = useCartStore((state) => state.initCart);
 
   const methods = useForm<FormData>({
     defaultValues: {

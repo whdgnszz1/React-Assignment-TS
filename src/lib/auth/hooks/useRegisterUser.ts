@@ -1,15 +1,16 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
-import { pageRoutes } from '@/apiRoutes';
 import { useToastStore } from '@/store/toast/useToastStore';
-import { RegisterUserReqDTO, UserDTO, registerUserAPI } from '..';
+
+import { pageRoutes } from '@/apiRoutes';
+import { IUser, RegisterUserReqDTO, registerUserAPI } from '..';
 
 export const useRegisterUser = () => {
   const { addToast } = useToastStore();
   const navigate = useNavigate();
 
-  return useMutation<UserDTO, Error, RegisterUserReqDTO>({
+  return useMutation<IUser, Error, RegisterUserReqDTO>({
     mutationFn: registerUserAPI,
     onSuccess: () => {
       addToast('회원가입 성공!', 'success');

@@ -25,7 +25,6 @@ import { createNewProduct } from '@/helpers/product';
 import { NewProductDTO } from '@/lib/product';
 import { useToastStore } from '@/store/toast/useToastStore';
 import { uploadImage } from '@/utils/imageUpload';
-import { pick } from '@/utils/common';
 
 interface ProductRegistrationModalProps {
   isOpen: boolean;
@@ -44,7 +43,7 @@ export const ProductRegistrationModal: React.FC<
   ProductRegistrationModalProps
 > = ({ isOpen, onClose }) => {
   const { mutateAsync, isPending: isLoading } = useAddProduct();
-  const { addToast } = useToastStore((state) => pick(state, 'addToast'));
+  const addToast = useToastStore((state) => state.addToast);
 
   const {
     register,

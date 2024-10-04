@@ -6,13 +6,12 @@ import { useMemo } from 'react';
 
 import { useCartStore } from '@/store/cart/useCartStore';
 
-import { pick } from '@/utils/common';
 import { formatPrice } from '@/utils/formatter';
 
 import { PaymentMethodTableRow } from './PaymentMethodTableRow';
 
 export const Payment = () => {
-  const { totalPrice } = useCartStore((state) => pick(state, 'totalPrice'));
+  const totalPrice = useCartStore((state) => state.totalPrice);
   const shippingCost = 3000;
 
   const getTotalPrice = useMemo(() => {
