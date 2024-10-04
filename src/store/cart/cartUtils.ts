@@ -1,6 +1,6 @@
 import { getItem, setItem } from '@/helpers/localStorage';
-import { CartItem } from '@/types/cartType';
 import { parseJSON } from '@/utils/common';
+import { CartItem, Total } from './types';
 
 const CART_LOCAL_STORAGE_KEY = 'CART_LOCAL_STORAGE_KEY';
 
@@ -10,18 +10,18 @@ export const getCartFromLocalStorage = (userId: string): CartItem[] => {
     return [];
   }
 
-  const cartItem = parseJSON(cartData) as { [key: string]: CartItem[] } | null;
-  return cartItem?.[userId] ?? [];
+  const cartItems = parseJSON(cartData) as Record<string, CartItem[]> | null;
+  return cartItems?.[userId] ?? [];
 };
 
 export const resetCartAtLocalStorage = (userId: string): void => {
   const cartData = getItem(CART_LOCAL_STORAGE_KEY);
-  const cartItem = cartData
-    ? (parseJSON(cartData) as { [key: string]: CartItem[] })
+  const cartItems = cartData
+    ? (parseJSON(cartData) as Record<string, CartItem[]>)
     : {};
 
   setItem(CART_LOCAL_STORAGE_KEY, {
-    ...cartItem,
+    ...cartItems,
     [userId]: [],
   });
 };
@@ -31,21 +31,22 @@ export const setCartToLocalStorage = (
   userId: string
 ): void => {
   const cartData = getItem(CART_LOCAL_STORAGE_KEY);
-  const cartItem = cartData
-    ? (parseJSON(cartData) as { [key: string]: CartItem[] })
+  const cartItems = cartData
+    ? (parseJSON(cartData) as Record<string, CartItem[]>)
     : {};
 
   setItem(CART_LOCAL_STORAGE_KEY, {
-    ...cartItem,
+    ...cartItems,
     [userId]: cart,
   });
 };
 
-export const calculateTotal = (cart: CartItem[]) =>
-  cart.reduce(
-    (acc, item) => ({
+export const calculateTotal = (cart: CartItem[]): Total => {
+  return cart.reduce(
+    (acc: Total, item: CartItem) => ({
       totalCount: acc.totalCount + item.count,
       totalPrice: acc.totalPrice + item.price * item.count,
     }),
     { totalCount: 0, totalPrice: 0 }
   );
+};

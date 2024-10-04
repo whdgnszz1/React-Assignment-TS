@@ -1,14 +1,15 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { TableCell, TableRow } from '@/components/ui/table';
-import { MAX_CART_VALUE } from '@/constants';
-import { cartValidationMessages } from '@/messages';
-import { changeCartItemCount, removeCartItem } from '@/store/cart/cartSlice';
-import { useAppDispatch } from '@/store/hooks';
-import { UserDTO } from '@/types/authType';
-import { CartItem } from '@/types/cartType';
-import { formatPrice } from '@/utils/formatter';
 import { Trash2 } from 'lucide-react';
+
+import { useCartStore } from '@/store/cart/useCartStore';
+
+import { MAX_CART_VALUE } from '@/constants';
+import { UserDTO } from '@/lib/auth';
+import { cartValidationMessages } from '@/messages';
+import { CartItem } from '@/store/cart/types';
+import { formatPrice } from '@/utils/formatter';
 
 interface ProductInfoTableRowProps {
   item: CartItem;
@@ -19,19 +20,21 @@ export const ProductInfoTableRow = ({
   item,
   user,
 }: ProductInfoTableRowProps) => {
-  const dispatch = useAppDispatch();
   const { id, title, count, image, price } = item;
+
+  const removeCartItem = useCartStore((state) => state.removeCartItem);
+  const changeCartItemCount = useCartStore(
+    (state) => state.changeCartItemCount
+  );
 
   const handleClickDeleteItem = () => {
     if (user) {
-      dispatch(removeCartItem({ itemId: id, userId: user.uid }));
+      removeCartItem(id, user.uid);
     }
   };
 
-  const handleChangeCount = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    const newCount = Number(event.target.value);
+  const handleChangeCount = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const newCount = Number(e.target.value);
 
     if (newCount > MAX_CART_VALUE) {
       alert(cartValidationMessages.MAX_INPUT_VALUE);
@@ -39,9 +42,7 @@ export const ProductInfoTableRow = ({
     }
 
     if (user) {
-      dispatch(
-        changeCartItemCount({ itemId: id, userId: user.uid, count: newCount })
-      );
+      changeCartItemCount({ itemId: id, count: newCount, userId: user.uid });
     }
   };
 
@@ -57,6 +58,8 @@ export const ProductInfoTableRow = ({
           onChange={handleChangeCount}
           value={count}
           className="w-20"
+          min={1}
+          max={MAX_CART_VALUE}
         />
       </TableCell>
       <TableCell>{formatPrice(price * count)}</TableCell>

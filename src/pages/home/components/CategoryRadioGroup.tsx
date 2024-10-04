@@ -1,7 +1,8 @@
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { categories } from '@/constants';
 import React from 'react';
+
+import { categories } from '@/constants';
 
 interface CategoryRadioGroupProps {
   categoryId: string;

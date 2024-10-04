@@ -29,7 +29,7 @@ export const debounce = <T extends (...args: any[]) => void>(
       fn(...args);
     };
 
-    if (timeout) {
+    if (timeout !== null) {
       clearTimeout(timeout);
     }
     timeout = window.setTimeout(later, wait);

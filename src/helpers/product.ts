@@ -1,5 +1,5 @@
-import { NewProductDTO } from '@/api/dtos/productDTO';
 import { categories } from '@/constants';
+import { NewProductDTO } from '@/lib/product';
 
 export const createNewProduct = (product: NewProductDTO, imageUrl: string) => {
   const categoryObj = categories.find((cat) => cat.id === product.category.id);

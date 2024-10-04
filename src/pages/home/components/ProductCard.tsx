@@ -1,9 +1,10 @@
-import { Product } from '@/api/dtos/productDTO';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { formatPrice } from '@/utils/formatter';
 import { useState } from 'react';
+
+import { Product } from '@/lib/product';
+import { formatPrice } from '@/utils/formatter';
 
 interface ProductCardProps {
   product: Product;
