@@ -1,5 +1,5 @@
 import { auth } from '@/firebase';
-import { UserDTO } from '@/lib/auth';
+import { IUser } from '@/lib/auth';
 import Cookies from 'js-cookie';
 import { create } from 'zustand';
 import { AuthStore } from './types';
@@ -51,7 +51,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     set({ isLogin });
   },
 
-  setUser: (user: UserDTO) => {
+  setUser: (user: IUser) => {
     set({ user, isLogin: true });
   },
 }));

@@ -10,8 +10,6 @@ import { useAuthStore } from '@/store/auth/useAuthStore';
 import { calculateTotal } from '@/store/cart/cartUtils';
 import { useCartStore } from '@/store/cart/useCartStore';
 
-import { pick } from '@/utils/common';
-
 import { Layout, authStatusType } from '@/pages/common/components/Layout';
 import { ItemList } from '@/pages/purchase/components/ItemList';
 import { Payment } from '@/pages/purchase/components/Payment';
@@ -32,10 +30,9 @@ export interface FormErrors {
 }
 
 export const Purchase: React.FC = () => {
-  const { user } = useAuthStore((state) => pick(state, 'user'));
-  const { cart, initCart } = useCartStore((state) =>
-    pick(state, 'cart', 'initCart')
-  );
+  const user = useAuthStore((state) => state.user);
+  const cart = useCartStore((state) => state.cart);
+  const initCart = useCartStore((state) => state.initCart);
 
   const methods = useForm<FormData>({
     defaultValues: {

@@ -9,7 +9,6 @@ import { useAuthStore } from '@/store/auth/useAuthStore';
 import { useCartStore } from '@/store/cart/useCartStore';
 
 import { pageRoutes } from '@/apiRoutes';
-import { pick } from '@/utils/common';
 
 import { ApiErrorBoundary } from '@/pages/common/components/ApiErrorBoundary';
 import { CartButton } from './CartButton';
@@ -20,13 +19,14 @@ import { LogoutButton } from './LogoutButton';
 export const NavigationBar = () => {
   const navigate = useNavigate();
   const { isOpen, openModal, closeModal } = useModal();
-  const { isLogin, user, logout, checkLoginStatus } = useAuthStore((state) =>
-    pick(state, 'isLogin', 'user', 'logout', 'checkLoginStatus')
-  );
 
-  const { cart, initCart } = useCartStore((state) =>
-    pick(state, 'cart', 'initCart')
-  );
+  const isLogin = useAuthStore((state) => state.isLogin);
+  const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
+  const checkLoginStatus = useAuthStore((state) => state.checkLoginStatus);
+
+  const cart = useCartStore((state) => state.cart);
+  const initCart = useCartStore((state) => state.initCart);
   const cartItems = useMemo(() => cart, [cart]);
 
   useEffect(() => {
