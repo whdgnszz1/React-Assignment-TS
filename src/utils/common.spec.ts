@@ -67,21 +67,6 @@ describe('pick 유틸리티 단위 테스트', () => {
 
     // 검증: 결과가 빈 객체인지 확인
   });
-
-  /**
-   * 테스트 케이스: 상속된 속성 선택
-   * 설명: `pick` 함수가 객체의 상속된 속성을 포함하지 않고 자신의 속성만 선택하는지 확인합니다.
-   */
-  it('상속된 속성은 포함하지 않고 자신의 속성만 선택한다', () => {
-    // 준비: 프로토타입이 있는 객체 정의
-    const parent = { inherited: 'inheritedValue' };
-    const obj = Object.create(parent);
-    obj.own = 'ownValue';
-
-    // 실행: `pick` 함수 호출 (상속된 키 포함)
-
-    // 검증: 결과가 자신의 속성만 포함하는지 확인
-  });
 });
 
 describe('debounce 유틸리티 단위 테스트', () => {
