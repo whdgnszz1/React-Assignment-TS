@@ -17,8 +17,15 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "types": ["vitest/globals", "testing-library__jest-dom"]
   },
-  "include": ["src"],
+  "include": [
+    "src",
+    "setupTests.ts",
+    "render.tsx",
+    "**/*.test.tsx",
+    "**/*.test.ts"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
