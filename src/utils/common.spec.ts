@@ -60,7 +60,7 @@ describe('pick 유틸리티 단위 테스트', () => {
 
   /**
    * 테스트 케이스: 존재하지 않는 키 선택
-   * 설명: `pick` 함수가 객체에 존재하지 않는 키를 선택할 경우 해당 키를 무시하고 빈 객체를 반환하는지 확인합니다.
+   * 설명: `pick` 함수가 객체에 존재하지 않는 키를 선택할 경우 에러를 던지는지 확인합니다.
    */
   it('존재하지 않는 키를 선택하면 빈 객체가 반환된다', () => {
     // 준비: 테스트할 객체 정의
@@ -69,18 +69,17 @@ describe('pick 유틸리티 단위 테스트', () => {
       b: 'B',
     };
 
-    // 실행: `pick` 함수 호출 (존재하지 않는 키)
-    const result = pick(obj, 'c');
-
-    // 검증: 결과가 빈 객체인지 확인
-    expect(result).toEqual({});
+    // 실행 및 검증: `pick` 함수 호출 시 에러가 발생하는지 확인
+    expect(() => pick(obj, 'c')).toThrow(
+      'Property "c" does not exist on the object.'
+    );
   });
 
   /**
    * 테스트 케이스: 상속된 속성 선택
-   * 설명: `pick` 함수가 객체의 상속된 속성을 포함하지 않고 자신의 속성만 선택하는지 확인합니다.
+   * 설명: `pick` 함수가 객체의 상속된 속성을 포함하여 자신의 속성도 선택하는지 확인합니다.
    */
-  it('상속된 속성은 포함하지 않고 자신의 속성만 선택한다', () => {
+  it('상속된 속성을 포함하여 자신의 속성도 선택한다', () => {
     // 준비: 프로토타입이 있는 객체 정의
     const parent = { inherited: 'inheritedValue' };
     const obj = Object.create(parent);
@@ -89,8 +88,8 @@ describe('pick 유틸리티 단위 테스트', () => {
     // 실행: `pick` 함수 호출 (상속된 키 포함)
     const result = pick(obj, 'own', 'inherited');
 
-    // 검증: 결과가 자신의 속성만 포함하는지 확인
-    expect(result).toEqual({ own: 'ownValue' });
+    // 검증: 결과가 자신의 속성과 상속된 속성을 모두 포함하는지 확인
+    expect(result).toEqual({ own: 'ownValue', inherited: 'inheritedValue' });
   });
 });
 
