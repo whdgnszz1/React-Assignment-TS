@@ -4,14 +4,15 @@ import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { CreditCard } from 'lucide-react';
 import { useMemo } from 'react';
 
-import { formatPrice } from '@/utils/formatter';
-
 import { useCartStore } from '@/store/cart/useCartStore';
+
+import { formatPrice } from '@/utils/formatter';
+import { pick } from '@/utils/common';
 
 import { PaymentMethodTableRow } from './PaymentMethodTableRow';
 
 export const Payment = () => {
-  const { totalPrice } = useCartStore();
+  const { totalPrice } = useCartStore((state) => pick(state, 'totalPrice'));
   const shippingCost = 3000;
 
   const getTotalPrice = useMemo(() => {

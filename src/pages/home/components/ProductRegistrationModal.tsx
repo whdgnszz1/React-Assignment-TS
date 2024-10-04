@@ -18,12 +18,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
+import { NewProductDTO } from '@/lib/product';
 import { useAddProduct } from '@/lib/product/hooks/useAddProduct';
+
+import { useToastStore } from '@/store/toast/useToastStore';
 
 import { ALL_CATEGORY_ID, categories } from '@/constants';
 import { createNewProduct } from '@/helpers/product';
-import { NewProductDTO } from '@/lib/product';
-import { useToastStore } from '@/store/toast/useToastStore';
+import { pick } from '@/utils/common';
 import { uploadImage } from '@/utils/imageUpload';
 
 interface ProductRegistrationModalProps {
@@ -43,7 +45,7 @@ export const ProductRegistrationModal: React.FC<
   ProductRegistrationModalProps
 > = ({ isOpen, onClose }) => {
   const { mutateAsync, isPending: isLoading } = useAddProduct();
-  const { addToast } = useToastStore();
+  const { addToast } = useToastStore((state) => pick(state, 'addToast'));
 
   const {
     register,

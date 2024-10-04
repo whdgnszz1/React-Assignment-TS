@@ -12,11 +12,12 @@ import { useMemo } from 'react';
 
 import { useCartStore } from '@/store/cart/useCartStore';
 
+import { pick } from '@/utils/common';
 import { formatPrice } from '@/utils/formatter';
 
 export const ItemList = () => {
-  const cart = useCartStore((state) => state.cart);
-  const cartItems = useMemo(() => Object.values(cart), [cart]);
+  const { cart } = useCartStore((state) => pick(state, 'cart'));
+  const cartItems = useMemo(() => cart, [cart]);
 
   return (
     <Card className="mt-6">

@@ -1,5 +1,5 @@
+import { CheckCircle, Info, X, XCircle } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { CheckCircle, XCircle, Info, X } from 'lucide-react';
 
 import { useToastStore } from '@/store/toast/useToastStore';
 

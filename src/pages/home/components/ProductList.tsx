@@ -26,6 +26,7 @@ import { useToastStore } from '@/store/toast/useToastStore';
 import { ProductCardSkeleton } from '../skeletons/ProductCardSkeleton';
 import { EmptyProduct } from './EmptyProduct';
 import { ProductCard } from './ProductCard';
+import { pick } from '@/utils/common';
 const ProductRegistrationModal = lazy(() =>
   import('./ProductRegistrationModal').then((module) => ({
     default: module.ProductRegistrationModal,
@@ -45,9 +46,11 @@ export const ProductList: React.FC<ProductListProps> = ({
     useState<boolean>(false);
   const [indexLink, setIndexLink] = useState<string | null>(null);
 
-  const { isLogin, user } = useAuthStore();
-  const { addToast } = useToastStore();
-  const { addCartItem } = useCartStore();
+  const { isLogin, user } = useAuthStore((state) =>
+    pick(state, 'isLogin', 'user')
+  );
+  const { addToast } = useToastStore((state) => pick(state, 'addToast'));
+  const { addCartItem } = useCartStore((state) => pick(state, 'addCartItem'));
 
   const {
     data,

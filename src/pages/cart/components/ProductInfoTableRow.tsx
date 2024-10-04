@@ -5,11 +5,13 @@ import { Trash2 } from 'lucide-react';
 
 import { useCartStore } from '@/store/cart/useCartStore';
 
-import { MAX_CART_VALUE } from '@/constants';
 import { UserDTO } from '@/lib/auth';
-import { cartValidationMessages } from '@/messages';
 import { CartItem } from '@/store/cart/types';
+
 import { formatPrice } from '@/utils/formatter';
+import { pick } from '@/utils/common';
+import { MAX_CART_VALUE } from '@/constants';
+import { cartValidationMessages } from '@/messages';
 
 interface ProductInfoTableRowProps {
   item: CartItem;
@@ -22,9 +24,8 @@ export const ProductInfoTableRow = ({
 }: ProductInfoTableRowProps) => {
   const { id, title, count, image, price } = item;
 
-  const removeCartItem = useCartStore((state) => state.removeCartItem);
-  const changeCartItemCount = useCartStore(
-    (state) => state.changeCartItemCount
+  const { removeCartItem, changeCartItemCount } = useCartStore((state) =>
+    pick(state, 'removeCartItem', 'changeCartItemCount')
   );
 
   const handleClickDeleteItem = () => {
