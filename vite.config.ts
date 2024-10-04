@@ -1,12 +1,8 @@
 import legacy from '@vitejs/plugin-legacy';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { defineConfig } from 'vite';
 import viteCompression from 'vite-plugin-compression';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   plugins: [
@@ -70,8 +66,4 @@ export default defineConfig({
       },
     },
   },
-  server: {
-    compress: true,
-  },
-  sourcemap: process.env.NODE_ENV === 'development',
 });
