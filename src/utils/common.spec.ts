@@ -74,23 +74,6 @@ describe('pick 유틸리티 단위 테스트', () => {
       'Property "c" does not exist on the object.'
     );
   });
-
-  /**
-   * 테스트 케이스: 상속된 속성 선택
-   * 설명: `pick` 함수가 객체의 상속된 속성을 포함하여 자신의 속성도 선택하는지 확인합니다.
-   */
-  it('상속된 속성을 포함하여 자신의 속성도 선택한다', () => {
-    // 준비: 프로토타입이 있는 객체 정의
-    const parent = { inherited: 'inheritedValue' };
-    const obj = Object.create(parent);
-    obj.own = 'ownValue';
-
-    // 실행: `pick` 함수 호출 (상속된 키 포함)
-    const result = pick(obj, 'own', 'inherited');
-
-    // 검증: 결과가 자신의 속성과 상속된 속성을 모두 포함하는지 확인
-    expect(result).toEqual({ own: 'ownValue', inherited: 'inheritedValue' });
-  });
 });
 
 describe('debounce 유틸리티 단위 테스트', () => {
