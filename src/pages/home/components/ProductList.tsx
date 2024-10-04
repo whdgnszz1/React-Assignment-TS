@@ -105,9 +105,11 @@ export const ProductList: React.FC<ProductListProps> = ({
     <>
       <div className="space-y-4">
         <div className="flex justify-end mt-4">
-          <Button onClick={openModal}>
-            <Plus className="mr-2 h-4 w-4" /> 상품 등록
-          </Button>
+          {isLogin && (
+            <Button onClick={openModal}>
+              <Plus className="mr-2 h-4 w-4" /> 상품 등록
+            </Button>
+          )}
         </div>
 
         {isLoading ? (
