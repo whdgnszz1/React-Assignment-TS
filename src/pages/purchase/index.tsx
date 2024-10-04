@@ -15,6 +15,7 @@ import { Payment } from '@/pages/purchase/components/Payment';
 import { ShippingInformationForm } from '@/pages/purchase/components/ShippingInformationForm';
 
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { pick } from '@/utils/common';
 
 export interface FormData {
   name: string;
@@ -31,8 +32,10 @@ export interface FormErrors {
 }
 
 export const Purchase: React.FC = () => {
-  const { user } = useAuthStore();
-  const { cart, initCart } = useCartStore();
+  const { user } = useAuthStore((state) => pick(state, 'user'));
+  const { cart, initCart } = useCartStore((state) =>
+    pick(state, 'cart', 'initCart')
+  );
 
   const methods = useForm<FormData>({
     defaultValues: {

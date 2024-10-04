@@ -4,8 +4,9 @@ import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useFilterStore } from '@/store/filter/useFilterStore';
 
+import { debounce, pick } from '@/utils/common';
+
 import { ApiErrorBoundary } from '@/pages/common/components/ApiErrorBoundary';
-import { debounce } from '@/utils/common';
 import { CategoryRadioGroup } from './CategoryRadioGroup';
 import { PriceRange } from './PriceRange';
 import { SearchBar } from './SearchBar';
@@ -30,7 +31,19 @@ export const ProductFilter = () => {
     setMinPrice,
     setMaxPrice,
     setCategoryId,
-  } = useFilterStore();
+  } = useFilterStore((state) =>
+    pick(
+      state,
+      'minPrice',
+      'maxPrice',
+      'title',
+      'categoryId',
+      'setTitle',
+      'setMinPrice',
+      'setMaxPrice',
+      'setCategoryId'
+    )
+  );
 
   const [searchValue, setSearchValue] = useState(title);
 

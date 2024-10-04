@@ -12,11 +12,12 @@ import { useAuthStore } from '@/store/auth/useAuthStore';
 import { useCartStore } from '@/store/cart/useCartStore';
 
 import { ProductInfoTableRow } from '@/pages/cart/components/ProductInfoTableRow';
+import { pick } from '@/utils/common';
 
 export const ProductInfoTable = () => {
-  const { user } = useAuthStore();
-  const { cart } = useCartStore();
-  const cartItems = useMemo(() => Object.values(cart), [cart]);
+  const { user } = useAuthStore((state) => pick(state, 'user'));
+  const { cart } = useCartStore((state) => pick(state, 'cart'));
+  const cartItems = useMemo(() => cart, [cart]);
 
   return (
     <Table>

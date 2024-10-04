@@ -4,8 +4,10 @@ import { Layout, authStatusType } from '@/pages/common/components/Layout';
 
 import { useCartStore } from '@/store/cart/useCartStore';
 
+import { pick } from '@/utils/common';
+
 export const Cart = () => {
-  const { cart } = useCartStore();
+  const { cart } = useCartStore((state) => pick(state, 'cart'));
 
   const isExist = cart.length > 0;
 

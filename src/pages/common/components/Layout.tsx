@@ -6,6 +6,7 @@ import { useAuthStore } from '@/store/auth/useAuthStore';
 import { pageRoutes } from '@/apiRoutes';
 import { NavigationBar } from './NavigationBar';
 import { Toast } from './Toast';
+import { pick } from '@/utils/common';
 
 export const authStatusType = {
   NEED_LOGIN: 'NEED_LOGIN',
@@ -24,7 +25,7 @@ export const Layout: React.FC<LayoutProps> = ({
   containerClassName = '',
   authStatus = authStatusType.COMMON,
 }) => {
-  const isLogin = useAuthStore((state) => state.isLogin);
+  const { isLogin } = useAuthStore((state) => pick(state, 'isLogin'));
 
   if (authStatus === authStatusType.NEED_LOGIN && !isLogin) {
     return <Navigate to={pageRoutes.login} />;

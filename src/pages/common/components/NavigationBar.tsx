@@ -13,14 +13,18 @@ import { CartButton } from './CartButton';
 import { ConfirmModal } from './ConfirmModal';
 import { LoginButton } from './LoginButton';
 import { LogoutButton } from './LogoutButton';
+import { pick } from '@/utils/common';
 
 export const NavigationBar = () => {
   const navigate = useNavigate();
   const { isOpen, openModal, closeModal } = useModal();
-  const { isLogin, user, logout, checkLoginStatus } = useAuthStore();
+  const { isLogin, user, logout, checkLoginStatus } = useAuthStore((state) =>
+    pick(state, 'isLogin', 'user', 'logout', 'checkLoginStatus')
+  );
 
-  const cart = useCartStore((state) => state.cart);
-  const initCart = useCartStore((state) => state.initCart);
+  const { cart, initCart } = useCartStore((state) =>
+    pick(state, 'cart', 'initCart')
+  );
   const cartItems = useMemo(() => Object.values(cart), [cart]);
 
   useEffect(() => {

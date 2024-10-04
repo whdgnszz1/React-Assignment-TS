@@ -9,6 +9,7 @@ import { MAX_CART_VALUE } from '@/constants';
 import { UserDTO } from '@/lib/auth';
 import { cartValidationMessages } from '@/messages';
 import { CartItem } from '@/store/cart/types';
+import { pick } from '@/utils/common';
 import { formatPrice } from '@/utils/formatter';
 
 interface ProductInfoTableRowProps {
@@ -22,9 +23,8 @@ export const ProductInfoTableRow = ({
 }: ProductInfoTableRowProps) => {
   const { id, title, count, image, price } = item;
 
-  const removeCartItem = useCartStore((state) => state.removeCartItem);
-  const changeCartItemCount = useCartStore(
-    (state) => state.changeCartItemCount
+  const { removeCartItem, changeCartItemCount } = useCartStore((state) =>
+    pick(state, 'removeCartItem', 'changeCartItemCount')
   );
 
   const handleClickDeleteItem = () => {
