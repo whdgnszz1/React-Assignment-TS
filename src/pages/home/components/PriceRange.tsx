@@ -5,11 +5,15 @@ import React from 'react';
 interface PriceRangeProps {
   onChangeMinPrice: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeMaxPrice: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  minPrice: number;
+  maxPrice: number;
 }
 
 export const PriceRange: React.FC<PriceRangeProps> = ({
   onChangeMinPrice,
   onChangeMaxPrice,
+  minPrice,
+  maxPrice,
 }) => {
   return (
     <div className="space-y-2 mt-4">
@@ -20,6 +24,7 @@ export const PriceRange: React.FC<PriceRangeProps> = ({
             type="number"
             min="0"
             step="1000"
+            value={minPrice === -1 ? '' : minPrice}
             placeholder="최소 금액"
             onChange={onChangeMinPrice}
             className="pr-8 w-[120px]"
@@ -34,6 +39,7 @@ export const PriceRange: React.FC<PriceRangeProps> = ({
             type="number"
             min="0"
             step="1000"
+            value={maxPrice === -1 ? '' : maxPrice}
             placeholder="최대 금액"
             onChange={onChangeMaxPrice}
             className="pr-8 w-[120px]"

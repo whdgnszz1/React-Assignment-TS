@@ -1,6 +1,7 @@
-import { pageRoutes } from '@/apiRoutes';
 import { Button } from '@/components/ui/button';
 import { useLocation, useNavigate } from 'react-router-dom';
+
+import { pageRoutes } from '@/apiRoutes';
 
 export const LoginButton = () => {
   const navigate = useNavigate();

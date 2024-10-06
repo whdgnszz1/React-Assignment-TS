@@ -1,20 +1,20 @@
 export const pick = <T extends object, K extends keyof T>(
   obj: T,
   ...propNames: K[]
-): Partial<Pick<T, K>> => {
-  if (!obj || !propNames) {
-    return {};
-  }
+): Pick<T, K> => {
+  const result = {} as Pick<T, K>;
 
-  return Object.keys(obj).reduce(
-    (acc, key) => {
-      if (propNames.includes(key as K)) {
-        acc[key as K] = obj[key as K];
-      }
-      return acc;
-    },
-    {} as Partial<Pick<T, K>>
-  );
+  propNames.forEach((key) => {
+    if (key in obj) {
+      result[key] = obj[key];
+    } else {
+      throw new Error(
+        `Property "${String(key)}" does not exist on the object.`
+      );
+    }
+  });
+
+  return result;
 };
 
 export const debounce = <T extends (...args: any[]) => void>(
@@ -29,7 +29,7 @@ export const debounce = <T extends (...args: any[]) => void>(
       fn(...args);
     };
 
-    if (timeout) {
+    if (timeout !== null) {
       clearTimeout(timeout);
     }
     timeout = window.setTimeout(later, wait);

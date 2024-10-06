@@ -1,15 +1,14 @@
+import { Skeleton } from '@/components/ui/skeleton';
 import Cookies from 'js-cookie';
 import { Suspense, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { pageRoutes } from '@/apiRoutes';
-import { ApiErrorBoundary } from '@/pages/common/components/ApiErrorBoundary';
-import { logout } from '@/store/auth/authSlice';
-import { initCart } from '@/store/cart/cartSlice';
+import { useAuthStore } from '@/store/auth/useAuthStore';
+import { useCartStore } from '@/store/cart/useCartStore';
 
-import { Skeleton } from '@/components/ui/skeleton';
+import { pageRoutes } from '@/apiRoutes';
 import { useModal } from '@/hooks/useModal';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { ApiErrorBoundary } from '@/pages/common/components/ApiErrorBoundary';
 import { CartButton } from './CartButton';
 import { ConfirmModal } from './ConfirmModal';
 import { LoginButton } from './LoginButton';
@@ -17,23 +16,31 @@ import { LogoutButton } from './LogoutButton';
 
 export const NavigationBar = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const { isOpen, openModal, closeModal } = useModal();
-  const { isLogin, user } = useAppSelector((state) => state.auth);
-  const { cart } = useAppSelector((state) => state.cart);
+  const isLogin = useAuthStore((state) => state.isLogin);
+  const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
+  const checkLoginStatus = useAuthStore((state) => state.checkLoginStatus);
+
+  const cart = useCartStore((state) => state.cart);
+  const initCart = useCartStore((state) => state.initCart);
 
   useEffect(() => {
-    if (isLogin && user && cart.length === 0) {
-      dispatch(initCart(user.uid));
+    checkLoginStatus();
+  }, [checkLoginStatus]);
+
+  useEffect(() => {
+    if (isLogin && user?.uid) {
+      initCart(user.uid);
     }
-  }, [isLogin, user, dispatch, cart.length]);
+  }, [isLogin, user, initCart]);
 
   const handleLogout = () => {
     openModal();
   };
 
   const handleConfirmLogout = () => {
-    dispatch(logout());
+    logout();
     Cookies.remove('accessToken');
     closeModal();
   };

@@ -1,30 +1,30 @@
+import { TableRow, TableCell } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { TableCell, TableRow } from '@/components/ui/table';
-import { MapPin } from 'lucide-react';
+import { useFormContext } from 'react-hook-form';
 
-interface AddressTableRowProps {
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
+export const AddressTableRow: React.FC = () => {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
 
-export const AddressTableRow = ({ value, onChange }: AddressTableRowProps) => {
   return (
     <TableRow>
-      <TableCell className="font-bold">
-        <Label htmlFor="address" className="flex items-center">
-          <MapPin className="mr-2 h-4 w-4" />
-          주소
-        </Label>
+      <TableCell>
+        <Label htmlFor="address">주소</Label>
       </TableCell>
       <TableCell>
         <Input
           id="address"
-          name="address"
-          value={value}
-          onChange={onChange}
+          type="text"
           placeholder="주소를 입력하세요"
+          {...register('address', { required: '주소를 입력하세요' })}
         />
+        {errors.address?.message &&
+          typeof errors.address.message === 'string' && (
+            <p className="text-sm text-red-500">{errors.address.message}</p>
+          )}
       </TableCell>
     </TableRow>
   );
