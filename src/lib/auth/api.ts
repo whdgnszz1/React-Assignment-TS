@@ -7,10 +7,10 @@ import {
 import { doc, setDoc } from 'firebase/firestore';
 import Cookies from 'js-cookie';
 import {
+  IUser,
   LoginRequestDto,
   LoginResponseDto,
   RegisterUserReqDTO,
-  IUser,
 } from './types';
 
 export const registerUserAPI = async ({

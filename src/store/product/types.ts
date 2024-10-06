@@ -1,7 +1,14 @@
-import { Product } from '@/lib/product';
+import { IProduct } from '@/lib/product';
 
-export interface ProductStore {
-  items: Product[];
+export interface ProductFilter {
+  categoryId: string;
+  title?: string;
+  minPrice?: number;
+  maxPrice?: number;
+}
+
+export interface ProductSliceState {
+  items: IProduct[];
   hasNextPage: boolean;
   isLoading: boolean;
   error: string | null;
