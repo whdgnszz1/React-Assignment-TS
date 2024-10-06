@@ -86,8 +86,6 @@ export const ProductRegistrationModal: React.FC<
       const newProduct = createNewProduct(newProductData, imageUrl);
 
       await mutateAsync(newProduct);
-
-      addToast('물품 등록 성공!', 'success');
       reset();
       onClose();
     } catch (error: any) {

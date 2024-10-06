@@ -6,13 +6,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { useMemo } from 'react';
 
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { useCartStore } from '@/store/cart/useCartStore';
 
 import { ProductInfoTableRow } from '@/pages/cart/components/ProductInfoTableRow';
-import { pick } from '@/utils/common';
 
 export const ProductInfoTable = () => {
   const user = useAuthStore((state) => state.user);
