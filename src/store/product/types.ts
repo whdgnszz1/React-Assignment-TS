@@ -1,7 +1,7 @@
-import { Product } from '@/lib/product';
+import { IProduct } from '@/lib/product';
 
 export interface ProductStore {
-  items: Product[];
+  items: IProduct[];
   hasNextPage: boolean;
   isLoading: boolean;
   error: string | null;
