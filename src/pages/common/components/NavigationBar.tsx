@@ -1,6 +1,6 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import Cookies from 'js-cookie';
-import { Suspense, useEffect, useMemo } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useModal } from '@/hooks/useModal';
@@ -27,7 +27,6 @@ export const NavigationBar = () => {
 
   const cart = useCartStore((state) => state.cart);
   const initCart = useCartStore((state) => state.initCart);
-  const cartItems = useMemo(() => cart, [cart]);
 
   useEffect(() => {
     checkLoginStatus();
@@ -68,7 +67,7 @@ export const NavigationBar = () => {
               {isLogin ? (
                 <ApiErrorBoundary>
                   <Suspense fallback={<Skeleton className="w-24 h-8" />}>
-                    <CartButton cart={cartItems} />
+                    <CartButton cart={cart} />
                     <LogoutButton onClick={handleLogout} />
                   </Suspense>
                 </ApiErrorBoundary>
