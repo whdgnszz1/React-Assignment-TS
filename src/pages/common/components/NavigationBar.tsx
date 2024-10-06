@@ -3,11 +3,13 @@ import Cookies from 'js-cookie';
 import { Suspense, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useModal } from '@/hooks/useModal';
+
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { useCartStore } from '@/store/cart/useCartStore';
 
 import { pageRoutes } from '@/apiRoutes';
-import { useModal } from '@/hooks/useModal';
+
 import { ApiErrorBoundary } from '@/pages/common/components/ApiErrorBoundary';
 import { CartButton } from './CartButton';
 import { ConfirmModal } from './ConfirmModal';
@@ -17,6 +19,7 @@ import { LogoutButton } from './LogoutButton';
 export const NavigationBar = () => {
   const navigate = useNavigate();
   const { isOpen, openModal, closeModal } = useModal();
+
   const isLogin = useAuthStore((state) => state.isLogin);
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);

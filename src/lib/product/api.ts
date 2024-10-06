@@ -12,7 +12,7 @@ import {
   serverTimestamp,
   where,
 } from 'firebase/firestore';
-import { IProduct, NewProductDTO, PaginatedProductsDTO } from './types';
+import { NewProductDTO, PaginatedProductsDTO, IProduct } from './types';
 
 export const fetchProducts = async (
   filter: ProductFilter,

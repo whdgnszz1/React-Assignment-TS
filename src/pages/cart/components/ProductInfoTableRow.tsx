@@ -3,10 +3,11 @@ import { Input } from '@/components/ui/input';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { Trash2 } from 'lucide-react';
 
-import { MAX_CART_VALUE } from '@/constants';
 import { IUser } from '@/lib/auth';
-import { cartValidationMessages } from '@/messages';
 import { CartItem } from '@/store/cart/types';
+
+import { MAX_CART_VALUE } from '@/constants';
+import { cartValidationMessages } from '@/messages';
 import { formatPrice } from '@/utils/formatter';
 
 interface ProductInfoTableRowProps {

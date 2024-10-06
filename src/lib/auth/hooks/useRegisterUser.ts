@@ -1,9 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
-import { useToastStore } from '@/store/toast/useToastStore';
-
 import { pageRoutes } from '@/apiRoutes';
+import { useToastStore } from '@/store/toast/useToastStore';
 import { IUser, RegisterUserReqDTO, registerUserAPI } from '..';
 
 export const useRegisterUser = () => {

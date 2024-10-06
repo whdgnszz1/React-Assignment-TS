@@ -2,19 +2,18 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 import React, { useCallback, useEffect } from 'react';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+
+import { useMakePurchase } from '@/lib/purchase/hooks/useMakePurchase';
 
 import { useAuthStore } from '@/store/auth/useAuthStore';
 import { calculateTotal } from '@/store/cart/cartUtils';
 import { useCartStore } from '@/store/cart/useCartStore';
 
-import { useMakePurchase } from '@/lib/purchase/hooks/useMakePurchase';
-
 import { Layout, authStatusType } from '@/pages/common/components/Layout';
 import { ItemList } from '@/pages/purchase/components/ItemList';
 import { Payment } from '@/pages/purchase/components/Payment';
 import { ShippingInformationForm } from '@/pages/purchase/components/ShippingInformationForm';
-
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
 export interface FormData {
   name: string;

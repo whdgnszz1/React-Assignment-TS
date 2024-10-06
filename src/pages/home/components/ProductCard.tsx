@@ -44,7 +44,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   return (
-    <Card className="cursor-pointer">
+    <Card className="cursor-pointer" data-testid="product-card">
       <div className="relative w-full h-40 bg-gray-200">
         <img
           src={image}
