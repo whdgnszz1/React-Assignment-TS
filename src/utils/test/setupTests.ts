@@ -1,6 +1,24 @@
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 
+export const navigateFn = vi.fn();
+
+vi.mock('react-router-dom', async () => {
+  const original =
+    await vi.importActual<typeof import('react-router-dom')>(
+      'react-router-dom'
+    );
+  return {
+    ...original,
+    useNavigate: () => navigateFn,
+    useLocation: () => ({
+      state: {
+        prevPath: 'prevPath',
+      },
+    }),
+  };
+});
+
 vi.mock('firebase/auth', async () => {
   const actualAuth =
     await vi.importActual<typeof import('firebase/auth')>('firebase/auth');

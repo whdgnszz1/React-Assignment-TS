@@ -8,6 +8,7 @@ import { pageRoutes } from '@/apiRoutes';
 
 export const PriceSummary = () => {
   const navigate = useNavigate();
+
   const totalCount = useCartStore((state) => state.totalCount);
   const totalPrice = useCartStore((state) => state.totalPrice);
 

@@ -12,20 +12,20 @@ interface CustomRenderResult extends RenderResult {
   user: UserEvent;
 }
 
-const customRender = async (
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+});
+
+const customRender = (
   component: ReactElement,
   options: RenderOptions = {}
-): Promise<CustomRenderResult> => {
+): CustomRenderResult => {
   const { routerProps } = options;
   const user = userEvent.setup();
-
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-    },
-  });
 
   const renderResult = render(
     <QueryClientProvider client={queryClient}>
