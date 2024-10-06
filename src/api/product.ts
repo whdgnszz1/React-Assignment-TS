@@ -15,7 +15,7 @@ import {
 import {
   NewProductDTO,
   PaginatedProductsDTO,
-  Product,
+  IProduct,
 } from './dtos/productDTO';
 
 export const fetchProducts = async (
@@ -57,7 +57,7 @@ export const fetchProducts = async (
         createdAt: data.createdAt?.toDate().toISOString(),
         updatedAt: data.updatedAt?.toDate().toISOString(),
       };
-    }) as Product[];
+    }) as IProduct[];
 
     if (filter.title) {
       products = products.filter((product) =>
@@ -81,7 +81,7 @@ export const fetchProducts = async (
 
 export const addProductAPI = async (
   productData: NewProductDTO
-): Promise<Product> => {
+): Promise<IProduct> => {
   try {
     return await runTransaction(db, async (transaction) => {
       const productsRef = collection(db, 'products');
@@ -105,7 +105,7 @@ export const addProductAPI = async (
       const newDocRef = doc(productsRef);
       transaction.set(newDocRef, newProductData);
 
-      const newProduct: Product = {
+      const newProduct: IProduct = {
         ...newProductData,
         id: String(newId),
         image: '',

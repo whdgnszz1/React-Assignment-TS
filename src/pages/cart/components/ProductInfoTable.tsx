@@ -9,12 +9,12 @@ import { ProductInfoTableRow } from '@/pages/cart/components/ProductInfoTableRow
 import { selectUser } from '@/store/auth/authSelectors';
 import { selectCart } from '@/store/cart/cartSelectors';
 import { useAppSelector } from '@/store/hooks';
-import { UserDTO } from '@/types/authType';
+import { IUser } from '@/types/authType';
 import { CartItem } from '@/types/cartType';
 
 export const ProductInfoTable = () => {
   const cart: CartItem[] = useAppSelector(selectCart);
-  const user: UserDTO | null = useAppSelector(selectUser);
+  const user: IUser | null = useAppSelector(selectUser);
 
   return (
     <Table>

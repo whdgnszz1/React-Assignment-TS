@@ -5,14 +5,14 @@ import { MAX_CART_VALUE } from '@/constants';
 import { cartValidationMessages } from '@/messages';
 import { changeCartItemCount, removeCartItem } from '@/store/cart/cartSlice';
 import { useAppDispatch } from '@/store/hooks';
-import { UserDTO } from '@/types/authType';
+import { IUser } from '@/types/authType';
 import { CartItem } from '@/types/cartType';
 import { formatPrice } from '@/utils/formatter';
 import { Trash2 } from 'lucide-react';
 
 interface ProductInfoTableRowProps {
   item: CartItem;
-  user: UserDTO | null;
+  user: IUser | null;
 }
 
 export const ProductInfoTableRow = ({
@@ -28,10 +28,8 @@ export const ProductInfoTableRow = ({
     }
   };
 
-  const handleChangeCount = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    const newCount = Number(event.target.value);
+  const handleChangeCount = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const newCount = Number(e.target.value);
 
     if (newCount > MAX_CART_VALUE) {
       alert(cartValidationMessages.MAX_INPUT_VALUE);

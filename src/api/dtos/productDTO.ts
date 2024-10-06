@@ -1,4 +1,4 @@
-export interface Product {
+export interface IProduct {
   id: string;
   title: string;
   price: number;
@@ -10,7 +10,7 @@ export interface Product {
 }
 
 export interface PaginatedProductsDTO {
-  products: Product[];
+  products: IProduct[];
   hasNextPage: boolean;
   totalCount: number;
 }

@@ -1,4 +1,4 @@
-import { Product } from '@/api/dtos/productDTO';
+import { IProduct } from '@/api/dtos/productDTO';
 import { ProductSliceState } from '@/types/productType';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { addProduct, loadProducts } from './productsActions';
@@ -25,7 +25,7 @@ const productsSlice = createSlice({
         (
           state,
           action: PayloadAction<{
-            products: Product[];
+            products: IProduct[];
             hasNextPage: boolean;
             totalCount: number;
             isInitial: boolean;
@@ -52,7 +52,7 @@ const productsSlice = createSlice({
       })
       .addCase(
         addProduct.fulfilled,
-        (state, action: PayloadAction<Product>) => {
+        (state, action: PayloadAction<IProduct>) => {
           state.items.unshift(action.payload);
           state.totalCount += 1;
           state.isLoading = false;

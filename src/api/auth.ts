@@ -1,14 +1,14 @@
 import { auth, db } from '@/firebase';
+import { IUser } from '@/types/authType';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { RegisterUserReqDTO } from './dtos/authDTO';
-import { UserDTO } from '@/types/authType';
 
 export const registerUserAPI = async ({
   email,
   password,
   name,
-}: RegisterUserReqDTO): Promise<UserDTO> => {
+}: RegisterUserReqDTO): Promise<IUser> => {
   const userCredential = await createUserWithEmailAndPassword(
     auth,
     email,

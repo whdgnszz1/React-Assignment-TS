@@ -1,7 +1,7 @@
 import {
+  IProduct,
   NewProductDTO,
   PaginatedProductsDTO,
-  Product,
 } from '@/api/dtos/productDTO';
 import { addProductAPI, fetchProducts } from '@/api/product';
 import { ProductFilter } from '@/types/productType';
@@ -9,7 +9,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 
 export const loadProducts = createAsyncThunk<
   {
-    products: Product[];
+    products: IProduct[];
     hasNextPage: boolean;
     totalCount: number;
     isInitial: boolean;
@@ -33,14 +33,14 @@ export const loadProducts = createAsyncThunk<
 );
 
 export const addProduct = createAsyncThunk<
-  Product,
+  IProduct,
   NewProductDTO,
   { rejectValue: string }
 >(
   'products/addProduct',
   async (productData: NewProductDTO, { rejectWithValue }) => {
     try {
-      const newProduct: Product = await addProductAPI(productData);
+      const newProduct: IProduct = await addProductAPI(productData);
       return newProduct;
     } catch (error: any) {
       return rejectWithValue(error.message);

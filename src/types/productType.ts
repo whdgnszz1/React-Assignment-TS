@@ -1,4 +1,4 @@
-import { Product } from '@/api/dtos/productDTO';
+import { IProduct } from '@/api/dtos/productDTO';
 
 export interface ProductFilter {
   categoryId: string;
@@ -8,7 +8,7 @@ export interface ProductFilter {
 }
 
 export interface ProductSliceState {
-  items: Product[];
+  items: IProduct[];
   hasNextPage: boolean;
   isLoading: boolean;
   error: string | null;

@@ -1,4 +1,4 @@
-import { Product } from '@/api/dtos/productDTO';
+import { IProduct } from '@/api/dtos/productDTO';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
@@ -6,14 +6,14 @@ import { formatPrice } from '@/utils/formatter';
 import { useState } from 'react';
 
 interface ProductCardProps {
-  product: Product;
+  product: IProduct;
   onClickAddCartButton: (
     e: React.MouseEvent<HTMLButtonElement>,
-    product: Product
+    product: IProduct
   ) => void;
   onClickPurchaseButton: (
     e: React.MouseEvent<HTMLButtonElement>,
-    product: Product
+    product: IProduct
   ) => void;
 }
 

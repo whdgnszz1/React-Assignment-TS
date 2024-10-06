@@ -1,10 +1,10 @@
-import { UserDTO } from '@/types/authType';
+import { IUser } from '@/types/authType';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { registerUser } from './authActions';
 
 interface AuthState {
   isLogin: boolean;
-  user: UserDTO | null;
+  user: IUser | null;
   registerStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
   registerError: string | null;
 }
@@ -23,7 +23,7 @@ export const authSlice = createSlice({
     setIsLogin: (state, action: PayloadAction<boolean>) => {
       state.isLogin = action.payload;
     },
-    setUser: (state, action: PayloadAction<UserDTO>) => {
+    setUser: (state, action: PayloadAction<IUser>) => {
       state.user = action.payload;
       state.isLogin = true;
     },
@@ -39,7 +39,7 @@ export const authSlice = createSlice({
       })
       .addCase(
         registerUser.fulfilled,
-        (state, action: PayloadAction<UserDTO>) => {
+        (state, action: PayloadAction<IUser>) => {
           state.registerStatus = 'succeeded';
           state.user = action.payload;
           state.isLogin = true;

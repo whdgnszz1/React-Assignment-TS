@@ -1,5 +1,5 @@
 import { registerUserAPI } from '@/api/auth';
-import { UserDTO } from '@/types/authType';
+import { IUser } from '@/types/authType';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 interface RegisterUserPayload {
@@ -9,7 +9,7 @@ interface RegisterUserPayload {
 }
 
 export const registerUser = createAsyncThunk<
-  UserDTO,
+  IUser,
   RegisterUserPayload,
   { rejectValue: string }
 >(
