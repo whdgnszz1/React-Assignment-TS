@@ -122,6 +122,7 @@ export const ProductRegistrationModal: React.FC<
               {...register('description', {
                 required: '상품 설명을 입력해주세요.',
               })}
+              className="resize-none"
               placeholder="상품 설명"
             />
             {errors.description && (
