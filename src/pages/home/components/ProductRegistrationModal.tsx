@@ -99,6 +99,7 @@ export const ProductRegistrationModal: React.FC<
           />
           <Textarea
             name="description"
+            className="resize-none"
             placeholder="상품 설명"
             onChange={handleChange}
             value={product.description || ''}
