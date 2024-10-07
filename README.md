@@ -23,7 +23,7 @@ VITE_FIREBASE_APP_ID="FIREBASE_APP_ID"
 
 ### 2. 의존성 라이브러리를 설치한 뒤 어플리케이션을 실행합니다.
 ```sh
-$ npm i
-$ npm run dev
+$ pnpm i
+$ pnpm run dev
 ```
 
