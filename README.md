@@ -80,3 +80,46 @@ $ pnpm run dev
 $ pnpm run test
 ```
 
+## 기능
+<table width="100%">
+  <tr>
+    <th width="50%">회원가입 페이지</th>
+    <th width="50%">로그인 페이지</th>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/5e76dc63-4dc8-4239-9a56-df068a888f33" width="100%" /></td>
+    <td><img src="https://github.com/user-attachments/assets/ec80d445-0f72-4348-ad23-2cee822cbaf5" width="100%" /></td>
+  </tr>
+</table>
+
+<table width="100%">
+  <tr>
+    <th width="50%">메인 페이지</th>
+    <th width="50%">장바구니 페이지</th>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/832c7f09-8233-4e31-9291-ccd2708e9179" width="100%" /></td>
+    <td><img src="https://github.com/user-attachments/assets/bc338d6e-bb7f-438d-b097-9431388d4aa6" width="100%" /></td>
+  </tr>
+</table>
+
+<table width="100%">
+  <tr>
+    <th width="50%">주문 페이지</th>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/6d23a2ca-d514-4354-b655-d4e194f9bad9" width="100%" /></td>
+  </tr>
+</table>
+
+<table width="100%">
+  <tr>
+    <th width="50%">상품 등록 기능</th>
+    <th width="50%">필터링 기능</th>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/9323cc52-87a0-4f58-8f13-5b54ab2801fc" width="100%" /></td>
+    <td><img src="https://github.com/user-attachments/assets/02333df1-68e5-4fde-8877-6aad1a79dc40" width="100%" /></td>
+  </tr>
+</table>
+
