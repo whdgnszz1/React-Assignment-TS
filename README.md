@@ -1,4 +1,4 @@
-# 스파르타 자바스크립트 과제
+# 스파르타 타입스크립트 과제
 
 이 프로젝트는 Tanstack Query, Zustand, React Hook Form을 사용하여 기존 코드를 리팩토링하는 과제입니다.
 
