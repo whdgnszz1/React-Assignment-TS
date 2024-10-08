@@ -11,8 +11,15 @@
 
 ## 실행
 
-### 1. 과제를 시작하기 위해 Google Firebase에서 프로젝트를 생성하고 .env파일에 다음과 같이 작성합니다.
+### 1. 과제를 시작하기 위해 Google Firebase에서 프로젝트를 생성 후 프로젝트의 key들을 .env파일에 추가합니다.
+
+<img src="https://github.com/user-attachments/assets/b8867200-cebf-4dbf-b708-d36b2975433a" width="50%" />
+<img src="https://github.com/user-attachments/assets/eb922e23-8774-489d-956b-1d49dc8a2a1e" width="50%" />
+<img src="https://github.com/user-attachments/assets/d4618067-52f7-47c5-a4b4-20d51a9b517d" width="50%" />
+<img src="https://github.com/user-attachments/assets/b6638995-05f8-4e13-a2a0-533d52f6e88a" width="50%" />
+
 ```
+#.env
 VITE_FIREBASE_API_KEY="FIREBASE_API_KEY"
 VITE_FIREBASE_AUTH_DOMAIN="FIREBASE_AUTH_DOMAIN"
 VITE_FIREBASE_PROJECT_ID="FIREBASE_PROJECT_ID"
@@ -21,9 +28,55 @@ VITE_FIREBASE_MESSAGING_SENDER_ID="FIREBASE_MESSAGING_SENDER_ID"
 VITE_FIREBASE_APP_ID="FIREBASE_APP_ID"
 ```
 
-### 2. 의존성 라이브러리를 설치한 뒤 어플리케이션을 실행합니다.
+### 2. Firebase 콘솔에서 Authentication을 프로비저닝 합니다.
+<img src="https://github.com/user-attachments/assets/4ec0175e-57de-4800-aa83-2415d88c74bc" width="30%" />
+
+- Authentication에서 이메일과 비밀번호를 사용하도록 설정해줍니다.
+<img src="https://github.com/user-attachments/assets/4de88fe0-68dd-4482-9deb-69d8909479ae" width="50%" />
+
+### 3. Firebase 콘솔에서 Firestore Database를 프로비저닝 합니다.
+<img src="https://github.com/user-attachments/assets/3ef7edaf-e061-43bc-aa42-ecdf13af498a" width="30%" />
+<br/>
+<img src="https://github.com/user-attachments/assets/ca5919f6-6969-49b4-af7f-1d9edfba8898" width="50%" />
+<img src="https://github.com/user-attachments/assets/93b46988-d6e1-4b35-b6c7-14e55cf53f95" width="50%" />
+
+- Firestore Database를 사용하기 위해 규칙을 다음과 같이 수정해줍니다.
+<img src="https://github.com/user-attachments/assets/51042f45-82c8-4ad5-99f2-57007ed41fa1" width="50%" />
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
+```
+
+### 3. Firebase 콘솔에서 Firebase Storage를 프로비저닝 합니다.
+<img src="https://github.com/user-attachments/assets/4ac6216e-09b2-44f3-bc00-174056a6b7d9" width="30%" />
+<br/>
+<img src="https://github.com/user-attachments/assets/e89e3ff5-1bac-4155-858d-dfc110e3e168" width="50%" />
+
+- Storage를 사용하기 위해 규칙을 다음과 같이 수정해줍니다.
+<img src="https://github.com/user-attachments/assets/516a5ecf-7ba1-4f33-8a23-75159ef9efdf" width="50%" />
+
+```
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
+```
+
+### 4. 의존성 라이브러리를 설치한 뒤 어플리케이션을 실행합니다.
 ```sh
 $ pnpm i
 $ pnpm run dev
+$ pnpm run test
 ```
 
