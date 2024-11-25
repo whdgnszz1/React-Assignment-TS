@@ -54,7 +54,48 @@ service cloud.firestore {
 }
 ```
 
-### 3. Firebase 콘솔에서 Firebase Storage를 프로비저닝 합니다.
+- Firestore Database 내에서 필터링 기능을 사용하기 위해 다음과 같이 색인을 추가해줍니다.
+
+<img src="https://github.com/user-attachments/assets/8a0225c6-c18a-4e10-8e81-137e40879fb7" width="50%" />
+
+<table width="100%">
+  <tr>
+    <th width="33%">상품명 필터링</th>
+    <th width="33%">카테고리 필터링</th>
+    <th width="33%">가격 필터링</th>  
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/05c5e891-b401-4c6f-80e5-fffe5af6456c" width="100%" /></td>
+    <td><img src="https://github.com/user-attachments/assets/896aa856-ae0d-4a3f-bfc5-77d647740674" width="100%" /></td>
+    <td><img src="https://github.com/user-attachments/assets/bf93216e-2bbe-40b8-b1ba-7241ef96e245" width="100%" /></td>
+  </tr>
+</table>
+
+<table width="100%">
+  <tr>
+    <th width="33%">상품명 + 가격 필터링</th>
+    <th width="33%">상품명 + 카테고리 필터링</th>
+    <th width="33%">카테고리 + 가격 필터링</th>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/2a4ee6f9-1362-4f6c-9b91-a731f244f393" width="100%" /></td>
+    <td><img src="https://github.com/user-attachments/assets/c4822cff-ccaf-4fd7-8326-cf8dcac04db1" width="100%" /></td>
+    <td><img src="https://github.com/user-attachments/assets/ed1a0e83-2946-488c-9623-aabd9f1e652a" width="100%" /></td>
+  </tr>
+</table>
+
+<table width="100%">
+  <tr>
+    <th width="33%">상품명 + 카테고리 + 가격 필터링</th>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/b012f1e1-917c-45c5-b218-7e55af9f71a7" width="100%" /></td>
+  </tr>
+</table>
+
+
+
+### 4. Firebase 콘솔에서 Firebase Storage를 프로비저닝 합니다.
 <img src="https://github.com/user-attachments/assets/4ac6216e-09b2-44f3-bc00-174056a6b7d9" width="30%" />
 <br/>
 <img src="https://github.com/user-attachments/assets/e89e3ff5-1bac-4155-858d-dfc110e3e168" width="50%" />
@@ -73,7 +114,9 @@ service firebase.storage {
 }
 ```
 
-### 4. 의존성 라이브러리를 설치한 뒤 어플리케이션을 실행합니다.
+
+
+### 5. 의존성 라이브러리를 설치한 뒤 어플리케이션을 실행합니다.
 ```sh
 $ pnpm i
 $ pnpm run dev
@@ -122,4 +165,3 @@ $ pnpm run test
     <td><img src="https://github.com/user-attachments/assets/02333df1-68e5-4fde-8877-6aad1a79dc40" width="100%" /></td>
   </tr>
 </table>
-
